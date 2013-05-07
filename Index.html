@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--Title-->
+    <title>3D Map of the US</title>
+
+    <!-- Main css-->
+    <link type="text/css" rel="stylesheet" href="Styles.css" />
+    <!-- Basic JQueryUI CSS-->
+    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+    <!--Main JQuery-->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!--JQueryUI-->
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <!-- Raphael JS-->
+    <script type="text/javascript" src="http://github.com/DmitryBaranovskiy/raphael/raw/master/raphael.js"></script>
+
+    <!-- D3-->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <!-- Three.js-->
+    <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
+    <!-- Three.js OrbitControls (Modified hotfix version to work with non-minified three)-->
+    <script src="OrbitControls.js"></script>
+
+    <!-- Global.js: Basic global variables and functions-->
+    <script type="text/javascript" src="Global.js"></script>
+    <!-- Census.js: Handles Census API calls and data-->
+    <script type="text/javascript" src="Census.js"></script>
+    <!--  3DScene.js: Scene setup-->
+    <script type="text/javascript" src="3DScene.js"></script>
+    <!-- Script.js: Main script file-->
+    <script type="text/javascript" src="Script.js"></script>
+</head>
+<body>
+    <!--Loading dialog-->
+    <div id="loadingDialog">
+        The map is loading.<br />
+        Please wait...<br />
+        <progress />
+    </div>
+
+    <!-- Box for user value expressions-->
+    <input id="mathBox" value="geo.totalPopulation" />
+
+    <!-- Map type drop-down menu-->
+    <select id="geoSelect">
+        <option value="county" selected="selected">Counties</option>
+        <option value="state">States</option>
+    </select>
+
+    <!-- Submit button-->
+    <button id="mathSubmit" onclick="mathSubmitClicked();">Reload Map</button>
+    <!-- FPS counter-->
+    <div id="fps"></div>
+    <!-- Help button-->
+    <button id="helpButton" onclick="$('#helpDialog').dialog('open');">?</button>
+
+    <!-- Help dialog-->
+    <div id="helpDialog">
+        <div style="font-size: small">
+            This is a list of the possible identifiers that can be loaded from the census API.
+            <br />
+            Data can also be requested with a census data identifier, by using the following format:<br />
+            One-Time request:
+            <div class="code">geo.P0010001</div>
+            <br />
+            Cache the returned value with a custom identifier:
+            <div class="code">geo.P0010001{customIdentifierForPopulation}</div>
+            <br />
+            <br />
+        </div>
+        <table border="1">
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>totalPopulation</td>
+                <td>Total number of people</td>
+            </tr>
+            <tr>
+                <td>malePopulation</td>
+                <td>Total number of men</td>
+            </tr>
+            <tr>
+                <td>femalePopulation</td>
+                <td>Total number of women</td>
+            </tr>
+            <tr>
+                <td>whitePopulation</td>
+                <td>Total number of white people</td>
+            </tr>
+            <tr>
+                <td>blackPopulation</td>
+                <td>Total number of black people</td>
+            </tr>
+            <tr>
+                <td>americanIndianPopulation</td>
+                <td>Total number of American Indians</td>
+            </tr>
+            <tr>
+                <td>asianPopulation</td>
+                <td>Total number of asian people</td>
+            </tr>
+            <tr>
+                <td>pacificIslanderPopulation</td>
+                <td>Total number of Pacific Islanders</td>
+            </tr>
+            <tr>
+                <td>nonDefinedRacePopulation</td>
+                <td>Total number of other people</td>
+            </tr>
+            <tr>
+                <td>multipleRacePopulation</td>
+                <td>Total number of multi-raced people</td>
+            </tr>
+            <tr>
+                <td>under18Population</td>
+                <td>Total number of people under 18 years of age</td>
+            </tr>
+            <tr>
+                <td>medianYearlyEarnings</td>
+                <td>Average yearly earnings</td>
+            </tr>
+            <tr>
+                <td>commuteTime</td>
+                <td>Average commute time</td>
+            </tr>
+            <tr>
+                <td>medianAnnualHouseholdIncome</td>
+                <td>Average income for one household</td>
+            </tr>
+            <tr>
+                <td>medianNumberOfRooms</td>
+                <td>Average number of rooms per house</td>
+            </tr>
+            <tr>
+                <td>monthlyHousingCost</td>
+                <td>Average cost of housing per month</td>
+            </tr>
+            <tr>
+                <td>medianAgeFemale</td>
+                <td>Average female age</td>
+            </tr>
+            <tr>
+                <td>medianAgeMale</td>
+                <td>Average male age</td>
+            </tr>
+            <tr>
+                <td>nativePopulation</td>
+                <td>Number of natives</td>
+            </tr>
+            <tr>
+                <td>foreignPopulation</td>
+                <td>Number of foreigners</td>
+            </tr>
+            <tr>
+                <td>medianPublicTransportationToWorkAge</td>
+                <td>Average age that people start taking public transportation to work</td>
+            </tr>
+            <tr>
+                <td>onePersonHouseholds</td>
+                <td>Total number of one-person households</td>
+            </tr>
+            <tr>
+                <td>twoPersonHouseholds</td>
+                <td>Total number of two-person households</td>
+            </tr>
+            <tr>
+                <td>threePersonHouseholds</td>
+                <td>Total number of three-person households</td>
+            </tr>
+            <tr>
+                <td>fourOrMorePersonHouseholds</td>
+                <td>Total number of households with four or more rooms</td>
+            </tr>
+            <tr>
+                <td>familyHouseholds</td>
+                <td>Total number of family households</td>
+            </tr>
+            <tr>
+                <td>nonFamilyHouseholds</td>
+                <td>Total number of non-family households</td>
+            </tr>
+            <tr>
+                <td>medianAgeAtFirstMarriageMale</td>
+                <td>Average age that men get married</td>
+            </tr>
+            <tr>
+                <td>medianAgeAtFirstMarriageFemale</td>
+                <td>Average age that women get married</td>
+            </tr>
+            <tr>
+                <td>povertyInLast12Months</td>
+                <td>Total number of people that were below the poverty line at some point in 2010</td>
+            </tr>
+            <tr>
+                <td>medianHouseholdIncome</td>
+                <td>Average household income</td>
+            </tr>
+            <tr>
+                <td>annualPerCapitaIncome</td>
+                <td>Average yearly income per person</td>
+            </tr>
+            <tr>
+                <td>mobileHomePopulation</td>
+                <td>Total number of people living in mobile homes</td>
+            </tr>
+            <tr>
+                <td>homelessPopulation</td>
+                <td>Total number of homeless people</td>
+            </tr>
+            <tr>
+                <td>aggregateNumberOfVehiclesAvailible</td>
+                <td>Average number of vehicles that people have available to them</td>
+            </tr>
+        </table>
+    </div>
+    <!-- Main div to render the scene in to-->
+    <div id="container" />
+</body>
+</html>

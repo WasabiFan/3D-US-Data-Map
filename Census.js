@@ -62,7 +62,7 @@ var geoInit = function () {// Loads the basic census data
                     }
 
                     // Add a new object to loadedGeographies with the name of the current county
-                    loadedGeographies[val[1] + val[2]] = { name: val[0] };
+                    loadedGeographies[val[1] + val[2]] = { name: val[0], geotype:'county' };
                 });
             }
         });
@@ -92,7 +92,7 @@ var geoInit = function () {// Loads the basic census data
                     }
 
                     // Add the new object to the array
-                    loadedGeographies[val[1]] = {};
+                    loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
                 });
             }
         });

@@ -1,7 +1,7 @@
 ﻿var WIDTH, HEIGHT, mapWidth, mapHeight; //Size variables
 var controls; //Orbit controls
 
-var camera, $container, scene, renderer, light, secondaryLight, camLight; //Scene objects
+var camera, $container, scene, renderer, light, secondaryLight, camLight, projector = new THREE.Projector(); //Scene objects
 
 var loadedGeographies = {};
 var mapObject = new THREE.Object3D(); //Object to encompass all of the geographies
@@ -14,7 +14,7 @@ var mapLoaded = false;
 
 var mapOffset = new THREE.Vector2(0, -500); //Vector to offset all of the points in the map (0,0 in the svg is in the upper left corner)
 
-var geoType = { county: 'county', state: 'state' }; //quick access to the different settings; not actually functionally useful 
+var geoType = { county: 'county', state: 'state' }; //Quick access to the different settings; not actually functionally useful 
 
 var currentGeoType = geoType.county; //Variable to store the currently selected map type
 

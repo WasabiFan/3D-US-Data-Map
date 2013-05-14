@@ -32,6 +32,8 @@
     <script type="text/javascript" src="Census.js"></script>
     <!--  3DScene.js: Scene setup-->
     <script type="text/javascript" src="3DScene.js"></script>
+    <!--Selection.js: Handles events to allow the user to select a geography and get details on it-->
+    <script type="text/javascript" src="Selection.js"></script>
     <!-- Script.js: Main script file-->
     <script type="text/javascript" src="Script.js"></script>
 </head>
@@ -58,6 +60,12 @@
     <div id="fps"></div>
     <!-- Help button-->
     <button id="helpButton" onclick="$('#helpDialog').dialog('open');">?</button>
+    
+    <div id="dataBox">
+        <h4 style="margin-top:-20px" id="selectedName">Selected Info</h4>
+        <h5 style="margin-top:1px" id="selectedInfo"></h5>
+        <!--button id="zoomButton" >  </button-->
+    </div>
 
     <!-- Help dialog-->
     <div id="helpDialog">

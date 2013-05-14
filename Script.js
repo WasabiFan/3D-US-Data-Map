@@ -173,11 +173,11 @@ var loadMap = function () {
                         console.log('Warning: A property used in the eval formula does not exist.');
                     }
                     else //Calculate the amount to extrude based on the user's formula
-                        extrude = scale(processGeographyValue(loadedGeographies[id]), min, max, 20, 750);
+                        extrude = scale(processedGeographyValue, min, max, 20, 750);
 
                     //Calculate a color for the geography based on the user's formula
                     var color = new THREE.Color(0xffffff);
-                    color.setHSL(0.7 - scale(processGeographyValue(loadedGeographies[id]), min, max, 0, 0.7), 0.5, 0.5);
+                    color.setHSL(0.7 - scale(processedGeographyValue, min, max, 0, 0.7), 0.5, 0.5);
 
                     //Set the mesh
                     loadedGeographies[id].mesh = new THREE.Object3D();
@@ -199,6 +199,13 @@ var loadMap = function () {
                             }
                         }
                     }
+
+                    //Store data about the shape in the object's userData
+                    loadedGeographies[id].mesh.userData['geographyName'] = loadedGeographies[id].name;
+                    loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;                    
+                    loadedGeographies[id].mesh.userData['geoType'] = loadedGeographies[id].geotype;
+                    
+
                     //Add the geography to the map object
                     mapObject.add(loadedGeographies[id].mesh);
                 }

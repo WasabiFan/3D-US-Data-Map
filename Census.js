@@ -114,7 +114,7 @@ var loadData = function (property) {// Function to load the census data for the 
 
         switch (censusName.toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
             case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                dataSet = 'acs';
+                dataSet = 'acs5';
                 break;
             case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
                 dataSet = 'sf1';
@@ -148,7 +148,7 @@ var loadData = function (property) {// Function to load the census data for the 
         if (rawCensusProperty) {// Switch on the raw census variable to find it's dataset
             switch (property.toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
                 case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                    dataSet = 'acs';
+                    dataSet = 'acs5';
                     break;
                 case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
                     dataSet = 'sf1';
@@ -163,7 +163,7 @@ var loadData = function (property) {// Function to load the census data for the 
         else {
             switch (censusVariables[property].toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
                 case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                    dataSet = 'acs';
+                    dataSet = 'acs5';
                     break;
                 case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
                     dataSet = 'sf1';

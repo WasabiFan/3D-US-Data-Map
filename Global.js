@@ -1,6 +1,6 @@
 ﻿var WIDTH, HEIGHT, mapWidth, mapHeight; //Size variables
 var controls; //Orbit controls
- 
+
 var camera, $container, scene, renderer, light, secondaryLight, camLight, projector = new THREE.Projector(); //Scene objects
 
 var loadedGeographies = {};

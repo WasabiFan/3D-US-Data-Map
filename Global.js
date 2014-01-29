@@ -1,4 +1,19 @@
-﻿var WIDTH, HEIGHT, mapWidth, mapHeight; //Size variables
+﻿////
+// US Census Bureau Configuration
+var APIKey = '2b9ee0ef86f98ab8a8d16451067b23081acb2bfa'; // US Census API key
+
+// various US Census Bureau constants scoped into an object.
+// (in case the API changes any of these values, it'll be easier to fix here)
+var USCB = Object();
+USCB.ACS = 'acs5'; // American Community Survey
+USCB.SF1 = 'sf1'; // Summary File 1
+USCB.COUNTY = 'county'; // County selector
+USCB.STATE = 'state'; // State selector
+USCB.YEAR = '2010'; // coded here for now, move to user selection later?
+
+////
+// Three.js Configuration
+var WIDTH, HEIGHT, mapWidth, mapHeight; //Size variables
 var controls; //Orbit controls
 
 var camera, $container, scene, renderer, light, secondaryLight, camLight, projector = new THREE.Projector(); //Scene objects

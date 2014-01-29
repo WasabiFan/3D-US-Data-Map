@@ -53,32 +53,40 @@ var processGeographyValue = function (geo) {
     //Get the user input
     var input = $('#mathBox').attr('value');
 
-    //Create a regular expression to find the limits of the variable name in a string
-    var regexVarName = new RegExp('[^A-Za-z0-9_{}]*$');
+    ////Create a regular expression to find the limits of the variable name in a string
+    //var regexVarName = new RegExp('[^A-Za-z0-9_{}]*$');
 
-    //Split the user input
-    var inputParts = input.split('geo.');
+    ////Split the user input
+    //var inputParts = input.split('geo.');
 
-    //Remove the first index, because that cannot contain an identifier that we need to process
-    inputParts.splice(0, 1);
+    ////Remove the first index, because that cannot contain an identifier that we need to process
+    //inputParts.splice(0, 1);
 
-    for (var x in inputParts) {//Iterate through the user's split input
+    //for (var x in inputParts) {//Iterate through the user's split input
 
-        //Get the identifier 
-        var prop = inputParts[x].substring(0, regexVarName.exec(inputParts[x]).index);
+    //    //Get the identifier 
+    //    var prop = inputParts[x].substring(0, regexVarName.exec(inputParts[x]).index);
 
-        if (loadedDatasets.indexOf(prop) == -1) //Check if the data has been loaded previously
-            loadData(prop); //Load the new data
+    //    if (loadedDatasets.indexOf(prop) == -1) //Check if the data has been loaded previously
+    //        loadData(prop); //Load the new data
 
-        if(prop.indexOf('{') != -1 || prop.indexOf('}') != -1) //Check if the identifier contains braces. meaning that the user specified a new identifier to use
-            prop = prop.substring(property.indexOf('{') + 1,property.indexOf('}')); //Remove everything accept the identifier
+    //    if(prop.indexOf('{') != -1 || prop.indexOf('}') != -1) //Check if the identifier contains braces. meaning that the user specified a new identifier to use
+    //        prop = prop.substring(property.indexOf('{') + 1,property.indexOf('}')); //Remove everything accept the identifier
 
-        if (geo == undefined || geo[prop] == undefined || geo[prop] == null) //Make sure that everything worked
-            return -1;
-    }
+    //    if (geo == undefined || geo[prop] == undefined || geo[prop] == null) //Make sure that everything worked
+    //        return -1;
+    //}
+
+    var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_]*", "igm"), function (match, v) {
+        
+        if (loadedDatasets.indexOf(match) == -1)
+            loadData(match);
+
+        return '(' + (geo[match] || match) + ')';
+    });
 
     //Return the final value
-    return eval(input);
+    return eval(resultValue);
 };
 
 var isLoadingMap = false;

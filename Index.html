@@ -46,12 +46,12 @@
     </div>
 
     <!-- Box for user value expressions-->
-    <input id="mathBox" value="geo.totalPopulation" />
+    <input id="mathBox" value="totalPopulation" />
 
     <!-- Map type drop-down menu-->
     <select id="geoSelect">
-        <option value="county" selected="selected">Counties</option>
-        <option value="state">States</option>
+        <option value="county">Counties</option>
+        <option value="state" selected="selected">States</option>
     </select>
 
     <!-- Submit button-->
@@ -70,14 +70,11 @@
     <!-- Help dialog-->
     <div id="helpDialog">
         <div style="font-size: small">
-            This is a list of the possible identifiers that can be loaded from the census API.
+            This is a list of the possible identifiers that can be loaded from the census API. The variables will evaluate to their census values when you reload the map.
             <br />
             Data can also be requested with a census data identifier, by using the following format:<br />
-            One-Time request:
-            <div class="code">geo.P0010001</div>
-            <br />
-            Cache the returned value with a custom identifier:
-            <div class="code">geo.P0010001{customIdentifierForPopulation}</div>
+
+            <div class="code">P0010001</div>
             <br />
             <br />
         </div>

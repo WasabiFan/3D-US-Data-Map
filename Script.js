@@ -150,9 +150,10 @@ var loadMap = function () {
 
                     //Loop through the path and draw it
                     for (var i = 0; i < path.length; i++) {
+                        
+                        shapes.push(new THREE.Shape());
                         switch (path[i][0]) {
                             case 'M': //Move to
-                                shapes.push(new THREE.Shape());
                                 shapeIndex++;
                                 shapes[shapeIndex].moveTo(path[i][1] + mapOffset.x, path[i][2] + mapOffset.y);
                                 break;

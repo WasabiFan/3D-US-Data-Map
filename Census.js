@@ -53,7 +53,7 @@ var censusURL = function (year, dataSet, getFor, censusName) {
         censusName = '';
     } else {
         // censusName needs to be modified a little
-        censusName = ',' + censusName
+        censusName = ',' + censusName;
     }
     return "http://api.census.gov/data/" + year + "/" + dataSet + "?key=" + APIKey + "&get=NAME" + censusName + "&for=" + getFor + ":*";
 }

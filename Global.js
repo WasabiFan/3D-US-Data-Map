@@ -16,12 +16,12 @@ var mapOffset = new THREE.Vector2(0, -500); //Vector to offset all of the points
 
 var geoType = { county: 'county', state: 'state' }; //Quick access to the different settings; not actually functionally useful 
 
-var currentGeoType = geoType.county; //Variable to store the currently selected map type
+var currentGeoType = geoType.state //Variable to store the currently selected map type
 
 var svgIndex = { county: 'Data/USCounties.svg', state: 'Data/USStates.svg' }; //The paths to the two svgs
 
 var geoTypeToSelectedIndex = function(type){ //Converter between text and the index of the two settings
-    switch(type){
+    switch(type.toLowerCase()){
         case 'county':
         case 'counties':
             return 0;

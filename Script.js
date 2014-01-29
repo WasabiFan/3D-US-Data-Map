@@ -12,10 +12,8 @@ var switchGeoType = function (type) { //Function to reload the map and associate
     loadedGeographies = {}; //Clear the loaded objects
     loadedDatasets = []; //Clear the list of data that has been loaded from the census api
 
-    try {
-        scene.remove(mapObject);//Remove the map from the scene
-    }
-    catch (e) { }
+    if(scene && scene.children.contains(mapObject))
+        scene.remove(mapObject); //Remove the map from the scene
 
     mapObject = new THREE.Object3D();//Re-initialize the map object
     currentGeoType = type; //Set the loaded map type
@@ -305,14 +303,13 @@ var animateLoop = function () {//Second loop to animate the geographies in to pl
 
 $(document).ready(function () { //Document is ready
     //Get the query string of the url and set it to selected
-    var selected = getQuerystring('geotype');
-
+    var selected = getQuerystring('geotype') || $('#geoSelect').find(':selected').text();
+    
     if (selected != '') {
-        $('#geoSelect')[0].selectedIndex = geoTypeToSelectedIndex(selected);
-        if (selectedIndexToGeoType(geoTypeToSelectedIndex(selected)) == geoType.state)
-            switchGeoType(selectedIndexToGeoType(geoTypeToSelectedIndex(selected)));
-        else
-            currentGeoType = selectedIndexToGeoType(geoTypeToSelectedIndex(selected));
+        var geoType = geoTypeToSelectedIndex(selected);
+        $('#geoSelect')[0].selectedIndex = geoType;
+        
+        switchGeoType(selectedIndexToGeoType(geoType));
     }
     //Set the height of the container to the full window height
     $('#container').height(window.innerHeight - 10);

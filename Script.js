@@ -150,13 +150,14 @@ var loadMap = function () {
 
                     //Loop through the path and draw it
                     for (var i = 0; i < path.length; i++) {
-                        
-                        shapes.push(new THREE.Shape());
+                                                
                         switch (path[i][0]) {
                             case 'M': //Move to
+                                shapes.push(new THREE.Shape());
                                 shapeIndex++;
                                 shapes[shapeIndex].moveTo(path[i][1] + mapOffset.x, path[i][2] + mapOffset.y);
                                 break;
+
                             case 'C': //Absolute curve
                                 shapes[shapeIndex].bezierCurveTo(path[i][1] + mapOffset.x, path[i][2] + mapOffset.y, path[i][3] + mapOffset.x, path[i][4] + mapOffset.y, path[i][5] + mapOffset.x, path[i][6] + mapOffset.y);
                                 break;

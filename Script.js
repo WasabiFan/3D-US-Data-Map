@@ -12,7 +12,7 @@ var switchGeoType = function (type) { //Function to reload the map and associate
     loadedGeographies = {}; //Clear the loaded objects
     loadedDatasets = []; //Clear the list of data that has been loaded from the census api
 
-    if(scene && scene.children.contains(mapObject))
+    if(scene && (scene.children.indexOf(mapObject) > -1))
         scene.remove(mapObject); //Remove the map from the scene
 
     mapObject = new THREE.Object3D();//Re-initialize the map object

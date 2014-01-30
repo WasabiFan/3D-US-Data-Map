@@ -45,10 +45,23 @@ var censusVariables = {// A JSON object to store the basic API variables
     aggregateNumberOfVehiclesAvailible: 'B25046_001E',
 };
 
+var censusURL = function (year, dataSet, getFor, censusName) {
+    // Constructs the API URL given a subset of parameters the URL may take.
+    // censusName is optional.
+    if (arguments.length == 3) {
+        // No censusName
+        censusName = '';
+    } else {
+        // censusName needs to be modified a little
+        censusName = ',' + censusName;
+    }
+    return "http://api.census.gov/data/" + year + "/" + dataSet + "?key=" + APIKey + "&get=NAME" + censusName + "&for=" + getFor + ":*";
+}
+
 var geoInit = function () {// Loads the basic census data
     if (currentGeoType == geoType.county) {// Check if geoType is county
         $.ajax({// Request the names of all th counties
-            url: "http://api.census.gov/data/2010/acs5?key=2b9ee0ef86f98ab8a8d16451067b23081acb2bfa&get=NAME&for=county:*",
+            url: censusURL(USCB.YEAR, USCB.ACS, USCB.COUNTY),
             dataType: 'json',
             async: false,
             success: function (data) {// Load the response data into loadedGeographies
@@ -80,7 +93,7 @@ var geoInit = function () {// Loads the basic census data
     }
     else {// If the geoType is state, load the basic state info
         $.ajax({// Get the names of all the states
-            url: "http://api.census.gov/data/2010/acs5?key=2b9ee0ef86f98ab8a8d16451067b23081acb2bfa&get=NAME&for=state:*",
+            url: censusURL(USCB.YEAR, USCB.ACS, USCB.STATE),
             dataType: 'json',
             async: false,
             success: function (data) {// When the ajax finishes, load the response data into loadedGeographies
@@ -102,9 +115,45 @@ var geoInit = function () {// Loads the basic census data
 // Initialize the basic data for all of the geographies
 geoInit();
 
-var loadData = function (property) {// Function to load the census data for the specified property and add the result to allobjects in loadedGeographies
+var loadCensusData = function (censusName, friendlyName) {
+    // Determines which dataset to call from and updates loadedDatasets.
+    // Also evaluates for some common errors.
+    console.log("Loading Census dataset for (" + censusName + "," + friendlyName + ")");
+
     // Define two basic variables that correspond to the census dataset and the _loadCensusData response respectively
     var dataSet, dataGetOut;
+
+    switch (censusName.toUpperCase()[0]) {
+        // Decide which dataset the census property comes from
+        case 'B':
+            // B indicates the American Community Survey
+            dataSet = USCB.ACS;
+            break;
+        case 'P':
+            // P indicates the Census Summary File
+            dataSet = USCB.SF1;
+            break;
+        default:
+            // Unknown property, cannot determine dataset
+            console.log("Cannot determine what data set to draw from given the property called (" + censusName + ")");
+            // Go home empty handed
+            return;
+    }
+
+    // Retrieve the data.
+    dataGetOut = _loadCensusData(censusName, friendlyName, dataSet);
+
+    // If _loadCensusData API call failed, go home empty handed.
+    if (dataGetOut == -1) {
+        console.log("Failed to load census data given censusName (" + censusName + "), friendlyName (" + friendlyName + ") and dataSet (" + dataSet +")");
+        return;
+    }
+
+    // Add the new variable to loadedDatasets, establishing the link
+    loadedDatasets.push(friendlyName);
+}
+
+var loadData = function (property) {// Function to load the census data for the specified property and add the result to allobjects in loadedGeographies
 
     if (property.indexOf('}') != -1 && property.indexOf('{') != -1) {// If property is a variable linkage, get the data and apply the link
         // Get the new variable name for the parameter from property
@@ -112,27 +161,8 @@ var loadData = function (property) {// Function to load the census data for the 
         // Get the raw census variable name for the requested parameter
         var censusName = property.substring(0, property.indexOf('{'));
 
-        switch (censusName.toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
-            case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                dataSet = 'acs5';
-                break;
-            case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
-                dataSet = 'sf1';
-                break;
-            default:// If the census variable name doesn't start either B or P, exit the loadData function
-                return;
-        }
-
-        // Load the data from the census and store the result
-        dataGetOut = _loadCensusData(censusName, newVarName, dataSet);
-
-        if (dataGetOut == -1)// If the _loadCensusData API call failed, exit the loadData function
-            return;
-
-        // If the load succeeded, add the new variable to loadedDatasets, establishing the link
-        loadedDatasets.push(newVarName);
+        loadCensusData(censusName, newVarName);
     }
-
     else {// If property is a regular variable name, get the data from the census API and add it to loadedGeographies
 
         //Property is a variable name
@@ -142,44 +172,17 @@ var loadData = function (property) {// Function to load the census data for the 
         if (censusVariables[property] == undefined && ((property.length == 11 && upperPropertyValue.indexOf('B') == 0) || (property.length == 8 && upperPropertyValue.indexOf('P') == 0))) {// If property is a raw census variable, set rawCensusVariable to true
             rawCensusProperty = true;
         }
-        else if (censusVariables[property] == undefined)// If property isn't a rawCensusProperty and the variable doesn't exist in censusVariables, exit
+        else if (censusVariables[property] == undefined) {// If property isn't a rawCensusProperty and the variable doesn't exist in censusVariables, exit
+            console.log("Invalid rawCensusProperty: " + property);
             return;
+        }
 
         if (rawCensusProperty) {// Switch on the raw census variable to find it's dataset
-            switch (property.toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
-                case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                    dataSet = 'acs5';
-                    break;
-                case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
-                    dataSet = 'sf1';
-                    break;
-                default:// If the census variable name doesn't start either B or P, exit the loadData function
-                    return;
-            }
-
-            // Load the census data from the census API and set the error output to dataGetOut
-            dataGetOut = _loadCensusData(property, property, dataSet);
+            loadCensusData(property, property);
         }
         else {
-            switch (censusVariables[property].toUpperCase()[0]) {// Decide which dataset the property is in to construct the request
-                case 'B':// If the census variable name starts with B, set dataSet to American Community Survey 5(acs5)
-                    dataSet = 'acs5';
-                    break;
-                case 'P':// If the variable name starts with P, data set is summary file 1(sf1)
-                    dataSet = 'sf1';
-                    break;
-                default:// If the census variable name doesn't start either B or P, exit the loadData function
-                    return;
-            }
-
-            // Load the census data from the census API and set the error output to dataGetOut
-            dataGetOut = _loadCensusData(censusVariables[property], property, dataSet);
+            loadCensusData(censusVariables[property], property);
         }
-
-        if (dataGetOut == -1)// If the _loadCensusData API call failed, exit the loadData function
-            return;
-        // If the load worked, add the new variable to loadedDatasets
-        loadedDatasets.push(property);
     }
 };
 
@@ -190,7 +193,7 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
 
     if (currentGeoType == geoType.county) {// If the current geoType is set to county, get the census API data for each county
         $.ajax({// Get the data for the property from the census api
-            url: "http://api.census.gov/data/2010/" + dataSet + "?key=2b9ee0ef86f98ab8a8d16451067b23081acb2bfa&get=NAME," + censusName + "&for=county:*",
+            url: censusURL(USCB.YEAR, dataSet, USCB.COUNTY, censusName),
             dataType: 'json',
             async: false,
             success: function (data) {// When the ajax request finishes, add the response data to loadedGeographies
@@ -213,7 +216,7 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
     }
     else {// The data type is state
         $.ajax({// Do a request to find the variable to load
-            url: "http://api.census.gov/data/2010/" + dataSet + "?key=2b9ee0ef86f98ab8a8d16451067b23081acb2bfa&get=NAME," + censusName + "&for=state:*",
+            url: censusURL(USCB.YEAR, dataSet, USCB.STATE, censusName),
             dataType: 'json',
             async: false,
             success: function (data) {// When the ajax finishes, add the response data into loadedGeometries

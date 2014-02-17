@@ -35,31 +35,8 @@ var currentGeoType = geoType.state //Variable to store the currently selected ma
 
 var svgIndex = { county: 'Data/USCounties.svg', state: 'Data/USStates.svg' }; //The paths to the two svgs
 
-var geoTypeToSelectedIndex = function(type){ //Converter between text and the index of the two settings
-    switch(type.toLowerCase()){
-        case 'county':
-        case 'counties':
-            return 0;
-            break;
-        case 'state':
-        case 'states':
-            return 1;
-            break;
-    }
-};
-
-var selectedIndexToGeoType = function (index) { //Converter between an index and the text of a setting
-    switch (index) {
-        case 0:
-            return 'county';
-            break;
-        case 1:
-            return 'state';
-            break;
-    }
-};
-
 function getQuerystring(key) { //Function to parse the URL and obtain a query string based on the given key
+    key = key.toLowerCase();
     key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
     var qs = regex.exec(window.location.href.toLowerCase());

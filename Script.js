@@ -17,15 +17,17 @@ var switchGeoType = function (type) { //Function to reload the map and associate
 
     mapObject = new THREE.Object3D();//Re-initialize the map object
     currentGeoType = type; //Set the loaded map type
+    $('#geoType').val(type); //Set the selectbox in case it is different
     geoInit(); //Load the required census data
     loadMap(); //Load the map
 };
 
 var mathSubmitClicked = function () { //Callback for the refresh map data button
     $('#loadingDialog').dialog('open'); //Display the loading dialog
-    if ($('#geoSelect')[0].selectedIndex != geoTypeToSelectedIndex(currentGeoType)) { //The user has selected a new map type
+    var geoType = $('#geoType').val();
+    if (geoType != currentGeoType) { //The user has selected a new map type
         setTimeout(function () { //Give the dialog time to open before doing time-consuming operations
-            switchGeoType(selectedIndexToGeoType($('#geoSelect')[0].selectedIndex));
+            switchGeoType(geoType);
         }, 20);
     }
     else { //The user did not select a new map type
@@ -304,15 +306,11 @@ var animateLoop = function () {//Second loop to animate the geographies in to pl
 }
 
 $(document).ready(function () { //Document is ready
-    //Get the query string of the url and set it to selected
-    var selected = getQuerystring('geotype') || $('#geoSelect').find(':selected').text();
-    
-    if (selected != '') {
-        var geoType = geoTypeToSelectedIndex(selected);
-        $('#geoSelect')[0].selectedIndex = geoType;
-        
-        switchGeoType(selectedIndexToGeoType(geoType));
-    }
+    //Get the desired geography type from URL or fallback to the selectbox
+    var geoType = getQuerystring('geoType') || $('#geoType').val();
+    //Set internal machinery to use the desired geography type.
+    switchGeoType(geoType);
+
     //Set the height of the container to the full window height
     $('#container').height(window.innerHeight - 10);
 

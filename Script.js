@@ -77,6 +77,8 @@ var processGeographyValue = function (geo) {
     //        return -1;
     //}
 
+    //Prevent Math.xxx from having Math and xxx being separated
+    input = input.replace('Math.', 'MathDOT');
     var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_]*", "igm"), function (match, v) {
         
         if (loadedDatasets.indexOf(match) == -1)
@@ -84,6 +86,8 @@ var processGeographyValue = function (geo) {
 
         return '(' + (geo[match] || match) + ')';
     });
+    //Undo regexp hack for Math.xxx
+    resultValue = resultValue.replace('MathDOT', 'Math.');
 
     //Return the final value
     return eval(resultValue);

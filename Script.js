@@ -1,4 +1,4 @@
-﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
+/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
 /// <reference path="http://code.jquery.com/ui/1.10.3/jquery-ui.js" />
 /// <reference path="Global.js" />
 /// <reference path="https://rawgithub.com/mrdoob/three.js/master/build/three.js" />
@@ -77,17 +77,15 @@ var processGeographyValue = function (geo) {
     //        return -1;
     //}
 
-    //Prevent Math.xxx from having Math and xxx being separated
-    input = input.replace('Math.', 'MathDOT');
-    var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_]*", "igm"), function (match, v) {
-        
+    var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_.]*", "igm"), function (match, v) { //Find variables and accessor strings (find groups of letters, underscores and periods)
+        if(match.indexOf('Math.') == 0) //If the string is trying to compute something, don't evaluate it as a census variable
+			return match;
+		
         if (loadedDatasets.indexOf(match) == -1)
             loadData(match);
 
         return '(' + (geo[match] || match) + ')';
     });
-    //Undo regexp hack for Math.xxx
-    resultValue = resultValue.replace('MathDOT', 'Math.');
 
     //Return the final value
     return eval(resultValue);

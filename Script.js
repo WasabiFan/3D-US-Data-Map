@@ -77,6 +77,7 @@ var processGeographyValue = function (geo) {
     //        return -1;
     //}
 
+    input = input.replace(/\s/g, '');
     var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_.]*", "igm"), function (match, i) { //Find variables and accessor strings (find groups of letters, underscores and periods)
         if(match.indexOf('Math.') == 0) //If the string is trying to compute something, don't evaluate it as a census variable
             return match;

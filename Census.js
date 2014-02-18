@@ -155,6 +155,9 @@ var loadCensusData = function (censusName, friendlyName) {
 
 var loadData = function (property) {// Function to load the census data for the specified property and add the result to allobjects in loadedGeographies
 
+    if (property.startsWith('MathDOT')) //Do not parse Math.xxx
+        return;
+
     if (property.indexOf('}') != -1 && property.indexOf('{') != -1) {// If property is a variable linkage, get the data and apply the link
         // Get the new variable name for the parameter from property
         var newVarName = property.toUpperCase().substring(property.indexOf('{') + 1, property.indexOf('}'));

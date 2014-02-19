@@ -29,7 +29,6 @@ var censusQueryCompleted = false;
 
 var loadedDatasets = []; //Variable to store what datasets have been loaded from the census api for easy access
 
-var allAnimationsComplete = false;
 var mapLoaded = false;
 
 var mapOffset = new THREE.Vector2(0, -500); //Vector to offset all of the points in the map (0,0 in the svg is in the upper left corner)

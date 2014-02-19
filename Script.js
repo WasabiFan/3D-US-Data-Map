@@ -243,10 +243,8 @@ var loadMap = function () {
                     $('#loadingDialog').dialog('close');
 
                     mapLoaded = true;
-                    allAnimationsComplete = false;
 
-                    //Start the animate loop
-                    animateLoop();
+                    initiateAnimations()
                 }
                 //Sets the variable indicating that the loadMap function is in progress to false
                 isLoadingMap = false;
@@ -276,43 +274,13 @@ Object.size = function (obj) { //Object size
     return size;
 };
 
-var animateLoop = function () {//Second loop to animate the geographies in to place
-
-    //Make sure that the animation is not complete
-    if (allAnimationsComplete)
-        return;
-
-    var complete = 0; //Store the number of complete animations
-
-    for (var x in loadedGeographies) { //Loop through all of the loaded geographies
-
-        //If the geography does not have a mesh, meaning that only data was loaded for it, just increment the counter
-        if (loadedGeographies[x].mesh == undefined)
-            complete++;
-        else {
-            if (loadedGeographies[x].currentExtrusion < loadedGeographies[x].targetExtrusion) { //The animation is still in progress
-                var increment = (loadedGeographies[x].targetExtrusion - loadedGeographies[x].mesh.position.z) / 10; //Calculate the amount to increment the position
-                loadedGeographies[x].mesh.position.z -= increment; //Increment both the physical position and the logical extrusion
-                loadedGeographies[x].currentExtrusion += increment;
-            }
-
-            if (loadedGeographies[x].currentExtrusion >= loadedGeographies[x].targetExtrusion - 2) { //Animation for the current geographies is complete
-                complete++; //Increment the counter
-                loadedGeographies[x].mesh.position.z = -loadedGeographies[x].targetExtrusion; //Move the geography
-                loadedGeographies[x].currentExtrusion = loadedGeographies[x].targetExtrusion; //Set currentExtrusion to targetExtrusion because the animation is complete
-            }
-        }
+var initiateAnimations = function () {
+    for (var i in loadedGeographies) {
+        new TWEEN.Tween(loadedGeographies[i].mesh.position)
+            .to({ z: -loadedGeographies[i].targetExtrusion }, 1500)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .start();
     }
-
-    if (complete >= Object.size(loadedGeographies)) //Check if all of the geographies are done
-        allAnimationsComplete = true;
-
-
-    if (!allAnimationsComplete)//If the animations are still in progress, continue the loop
-        requestAnimationFrame(animateLoop);
-    else
-        console.log('Animation complete');//Otherwise, exit
-
 }
 
 $(document).ready(function () { //Document is ready

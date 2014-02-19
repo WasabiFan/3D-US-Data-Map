@@ -318,8 +318,6 @@ var animateLoop = function () {//Second loop to animate the geographies in to pl
 $(document).ready(function () { //Document is ready
     //Get the desired geography type from URL or fallback to the selectbox
     var geoType = getQuerystring('geoType') || $('#geoType').val();
-    //Set internal machinery to use the desired geography type.
-    switchGeoType(geoType);
 
     //Set the height of the container to the full window height
     $('#container').height(window.innerHeight - 10);
@@ -330,6 +328,15 @@ $(document).ready(function () { //Document is ready
     //Create and display the loading dialog
     $('#loadingDialog').dialog({ title: 'Loading...', dialogClass: 'no-close', modal: true });
 
-    //Load the scene
-    loadScene();
+    //Use Deferred to ensure properties are loaded before they are accessed
+    //Associate properties with dataSets
+    $.when(uscbPropertyInit())
+    .then(function () {
+        console.log('Completed parsing properties.');
+        //Load the scene
+        loadScene();
+        //Set internal machinery to use the desired geography type.
+        switchGeoType(geoType);
+    });
+
 });

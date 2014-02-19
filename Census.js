@@ -45,6 +45,13 @@ var censusVariables = {// A JSON object to store the basic API variables
     aggregateNumberOfVehiclesAvailible: 'B25046_001E',
 };
 
+var censusPropURL = function (year, dataSet) {
+    // Seems like CORS is broken for this call
+    //return "http://api.census.gov/data/" + year + "/" + dataSet + "/variables.json"
+    // Use a cached copy instead
+    return "Data/Variables" + year + dataSet + ".js";
+}
+
 var censusURL = function (year, dataSet, getFor, censusName) {
     // Constructs the API URL given a subset of parameters the URL may take.
     // censusName is optional.
@@ -121,6 +128,26 @@ var geoInit = function () {// Loads the basic census data
 // Initialize the basic data for all of the geographies
 geoInit();
 
+// Find and associate variables with datasets
+var uscbPropertyInit = function () {
+    var deferred = $.Deferred();
+    // Parse available datasets
+    var deferreds = $([USCB.ACS, USCB.SF1]).map(function (i,dataSet) {
+        return $.getJSON(censusPropURL(USCB.YEAR, dataSet), function (d) {
+            // this would be nicer with .each if that could be done?
+            console.log('Parsing properties for ' + dataSet);
+            for (key in d.variables)
+                // skip geographical keys
+                if (d.variables[key] && d.variables[key].concept && d.variables[key].concept.toUpperCase().substring(0,10) !== 'GEOGRAPHIC ') USCB.PROPS[key.toUpperCase()] = dataSet;
+            console.log('Done parsing properties for ' + dataSet);
+        });
+    });
+    // This function is complete when its sub commands are complete.
+    //http://stackoverflow.com/a/6162959/1867779
+    $.when.apply(null, deferreds).then(function () {deferred.resolve();});
+    return deferred.promise();
+}
+
 var loadCensusData = function (censusName, friendlyName) {
     // Determines which dataset to call from and updates loadedDatasets.
     // Also evaluates for some common errors.
@@ -129,21 +156,11 @@ var loadCensusData = function (censusName, friendlyName) {
     // Define two basic variables that correspond to the census dataset and the _loadCensusData response respectively
     var dataSet, dataGetOut;
 
-    switch (censusName.toUpperCase()[0]) {
-        // Decide which dataset the census property comes from
-        case 'B':
-            // B indicates the American Community Survey
-            dataSet = USCB.ACS;
-            break;
-        case 'P':
-            // P indicates the Census Summary File
-            dataSet = USCB.SF1;
-            break;
-        default:
-            // Unknown property, cannot determine dataset
-            logError("Cannot determine what data set to draw from given the property called (" + censusName + ")", false);
-            // Go home empty handed
-            return;
+    var upperPropertyValue = censusName.toUpperCase();
+    if (upperPropertyValue in USCB.PROPS) dataSet = USCB.PROPS[upperPropertyValue];
+    else {// Bail if dataSet couldn't be found
+        logError("Cannot determine what data set to draw from given the property called (" + upperPropertyValue + ")", false);
+        return;
     }
 
     // Retrieve the data.
@@ -175,7 +192,7 @@ var loadData = function (property) {// Function to load the census data for the 
         var rawCensusProperty = false;
 
         var upperPropertyValue = property.toUpperCase();
-        if (censusVariables[property] == undefined && ((property.length == 11 && upperPropertyValue.indexOf('B') == 0) || (property.length == 8 && upperPropertyValue.indexOf('P') == 0))) {// If property is a raw census variable, set rawCensusVariable to true
+        if (censusVariables[property] == undefined && (upperPropertyValue in USCB.PROPS)) {// If property is a raw census variable, set rawCensusVariable to true
             rawCensusProperty = true;
         }
         else if (censusVariables[property] == undefined) {// If property isn't a rawCensusProperty and the variable doesn't exist in censusVariables, exit

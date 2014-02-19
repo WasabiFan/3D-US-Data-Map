@@ -77,6 +77,9 @@ var geoInit = function () {// Loads the basic census data
                     // Add a new object to loadedGeographies with the name of the current county
                     loadedGeographies[val[1] + val[2]] = { name: val[0], geotype:'county' };
                 });
+            },
+            error: function (XHR, textStatus, errorThrown) {
+                logError(errorStrings.censusError);
             }
         });
 
@@ -107,6 +110,9 @@ var geoInit = function () {// Loads the basic census data
                     // Add the new object to the array
                     loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
                 });
+            },
+            error: function (XHR, textStatus, errorThrown) {
+                logError(errorStrings.censusError);
             }
         });
     }
@@ -135,7 +141,7 @@ var loadCensusData = function (censusName, friendlyName) {
             break;
         default:
             // Unknown property, cannot determine dataset
-            console.log("Cannot determine what data set to draw from given the property called (" + censusName + ")");
+            logError("Cannot determine what data set to draw from given the property called (" + censusName + ")", false);
             // Go home empty handed
             return;
     }
@@ -145,7 +151,7 @@ var loadCensusData = function (censusName, friendlyName) {
 
     // If _loadCensusData API call failed, go home empty handed.
     if (dataGetOut == -1) {
-        console.log("Failed to load census data given censusName (" + censusName + "), friendlyName (" + friendlyName + ") and dataSet (" + dataSet +")");
+        logError("Failed to load census data given censusName (" + censusName + "), friendlyName (" + friendlyName + ") and dataSet (" + dataSet +")", false);
         return;
     }
 
@@ -173,8 +179,8 @@ var loadData = function (property) {// Function to load the census data for the 
             rawCensusProperty = true;
         }
         else if (censusVariables[property] == undefined) {// If property isn't a rawCensusProperty and the variable doesn't exist in censusVariables, exit
-            console.log("Invalid rawCensusProperty: " + property);
-            return;
+            logError("Invalid rawCensusProperty: " + property);
+            return false;
         }
 
         if (rawCensusProperty) {// Switch on the raw census variable to find it's dataset
@@ -210,7 +216,7 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
                 });
             },
             error: function (message) {//Check for errors and return an error code if there were any
-                return -1;
+                logError(errorStrings.censusError)
             }
         });
     }
@@ -233,7 +239,7 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
                 });
             },
             error: function (message) {//Return -1 on error
-                return -1;
+                logError(errorStrings.censusError);
             }
         });
     }

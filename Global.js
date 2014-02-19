@@ -49,3 +49,29 @@ function getQuerystring(key) { //Function to parse the URL and obtain a query st
     else
         return qs[1];
 }
+
+//Global error log function
+var logError = function (errorMessage, promptUser) {
+    console.error(errorMessage);
+    if (promptUser || true)
+        alert(errorMessage);
+}
+
+//Error strings
+var errorStrings = {
+    censusError: 'There was an error loading data from the Census API.',
+    shapeDefError: 'There was an error loading the shape definition SVGs.'
+};
+
+//
+if (!String.prototype.format) {
+    String.prototype.format = function () {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined'
+              ? args[number]
+              : match
+            ;
+        });
+    };
+}

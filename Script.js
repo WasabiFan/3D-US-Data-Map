@@ -235,25 +235,25 @@ var loadMap = function () {
                 }
                 else
                     console.log('ID: ' + id + ' Geography:' + loadedGeographies[id]);
-
-                if (index == totalPaths - 1) {
-                    //Set the rotation and scale of the map
-                    mapObject.rotation.set(degToRad(90), 0, 0);
-                    mapObject.scale.set(0.1,0.1,0.1);
-
-                    //Add the map to the scene
-                    scene.add(mapObject);
-
-                    //Close the loading dialog
-                    $('#loadingDialog').dialog('close');
-
-                    mapLoaded = true;
-
-                    initiateAnimations()
-                }
-                //Sets the variable indicating that the loadMap function is in progress to false
-                isLoadingMap = false;
+                
             });
+
+            //Set the rotation and scale of the map
+            mapObject.rotation.set(degToRad(90), 0, 0);
+            mapObject.scale.set(0.1, 0.1, 0.1);
+
+            //Add the map to the scene
+            scene.add(mapObject);
+
+            //Close the loading dialog
+            $('#loadingDialog').dialog('close');
+
+            mapLoaded = true;
+
+            initiateAnimations()
+
+            //Unlocks everything by flagging that we have completed the load
+            isLoadingMap = false;
 
             if (mapLoadErrors.length > 0) {
                 if (mapLoadErrors.length > 5) {
@@ -316,10 +316,12 @@ $(document).ready(function () { //Document is ready
     $.when(uscbPropertyInit())
     .then(function () {
         console.log('Completed parsing properties.');
-        //Load the scene
-        loadScene();
         //Set internal machinery to use the desired geography type.
         switchGeoType(geoType);
+
+        //Load the scene
+        loadScene();
+        
     });
 
 });

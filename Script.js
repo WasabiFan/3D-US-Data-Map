@@ -98,11 +98,15 @@ var loadEquationFromInput = function () {
 }
 
 var isLoadingMap = false;
+var mapLoadErrors = [];
 
 //Function to load the map
 var loadMap = function () {
     if (isLoadingMap) //If the loadMap function is already running, 
         return;
+
+    mapLoadErrors = [];
+
     console.log('Loading map...');
     //Sets the variable indicating that the loadMap function is running to true
     isLoadingMap = true;
@@ -188,8 +192,9 @@ var loadMap = function () {
                     //Get a value for the geography
                     var processedGeographyValue = processGeographyValue(loadedGeographies[id]);
                     var extrude;
-                    if (processedGeographyValue == -1) { //Make sure that the value evaluated successfully
+                    if (processedGeographyValue == -1 || processedGeographyValue == undefined) { //Make sure that the value evaluated successfully
                         extrude = 0;
+                        mapLoadErrors.push(errorStrings.evalError.replace('{geographyName}', loadedGeographies[id].name));
                     }
                     else //Calculate the amount to extrude based on the user's formula
                         extrude = scale(processedGeographyValue, min, max, 20, 750);
@@ -249,6 +254,16 @@ var loadMap = function () {
                 //Sets the variable indicating that the loadMap function is in progress to false
                 isLoadingMap = false;
             });
+
+            if (mapLoadErrors.length > 0) {
+                if (mapLoadErrors.length > 5) {
+                    var len = mapLoadErrors.length;
+                    mapLoadErrors.splice(4);
+                    mapLoadErrors.push('...and ' + (len - 4) + ' more');
+                }
+
+                logError('Errors occurred. See below for details.\n' + mapLoadErrors.join('\n\t'));
+            }
         },
         error: function (XHR, textStatus, errorThrown) {
             logError(errorStrings.shapeDefError);

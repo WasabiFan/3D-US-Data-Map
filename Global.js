@@ -60,10 +60,11 @@ var logError = function (errorMessage, promptUser) {
 //Error strings
 var errorStrings = {
     censusError: 'There was an error loading data from the Census API.',
-    shapeDefError: 'There was an error loading the shape definition SVGs.'
+    shapeDefError: 'There was an error loading the shape definition SVGs.',
+    evalError: 'An error occurred while evaluating the formula for geography {geographyName}.'
 };
 
-//
+//Extensions
 if (!String.prototype.format) {
     String.prototype.format = function () {
         var args = arguments;

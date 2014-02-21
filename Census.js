@@ -214,52 +214,29 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
     //Make sure that the census name is all capitalized, as their servers are case-sensitive
     censusName = censusName.toUpperCase();
 
-    if (currentGeoType == geoType.county) {// If the current geoType is set to county, get the census API data for each county
-        $.ajax({// Get the data for the property from the census api
-            url: censusURL(USCB.YEAR, dataSet, USCB.COUNTY, censusName),
-            dataType: 'json',
-            async: false,
-            success: function (data) {// When the ajax request finishes, add the response data to loadedGeographies
+    $.ajax({// Get the data for the property from the census api
+        url: censusURL(USCB.YEAR, dataSet, currentGeoType == geoType.county? USCB.COUNTY : USCB.STATE, censusName),
+        dataType: 'json',
+        async: false,
+        success: function (data) {// When the ajax request finishes, add the response data to loadedGeographies
 
-                var i = 0;
-                $.each(data, function (key, val) { //Loop through all of the returned data
-                    if (i == 0) {//Don't evaluate the header
-                        i++;
-                        return;
-                    }
+            var i = 0;
+            $.each(data, function (key, val) { //Loop through all of the returned data
+                if (i == 0) {//Don't evaluate the header
+                    i++;
+                    return;
+                }
 
-                    // Add the ajax response data to loadedGeographies
+                if (currentGeoType == geoType.county) // Add the ajax response data to loadedGeographies
                     loadedGeographies[val[2] + val[3]][friendlyName] = val[1];
-                });
-            },
-            error: function (message) {//Check for errors and return an error code if there were any
-                logError(errorStrings.censusError)
-            }
-        });
-    }
-    else {// The data type is state
-        $.ajax({// Do a request to find the variable to load
-            url: censusURL(USCB.YEAR, dataSet, USCB.STATE, censusName),
-            dataType: 'json',
-            async: false,
-            success: function (data) {// When the ajax finishes, add the response data into loadedGeometries
-
-                var i = 0;
-                $.each(data, function (key, val) { //Loop through all of the returned data
-                    if (i == 0) {// Dont evaluate the first line
-                        i++;
-                        return;
-                    }
-
-                    // Add the response data to loadedGeographies
-                    loadedGeographies[val[2]][friendlyName] = val[1];
-                });
-            },
-            error: function (message) {//Return -1 on error
-                logError(errorStrings.censusError);
-            }
-        });
-    }
+                else
+                    loadedGeographies[val[2]         ][friendlyName] = val[1];
+            });
+        },
+        error: function (message) {//Report any AJAX errors
+            logError(errorStrings.censusError)
+        }
+    });
 };
 
 var getGEOID = function (SVGID) {// Function to get the GEOID associated with an ID

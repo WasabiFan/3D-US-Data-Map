@@ -38,15 +38,6 @@ var mathSubmitClicked = function () { //Callback for the refresh map data button
     }
 };
 
-//Function to scale a number from a source scale to a destination scale
-var scale = function (value, oldMin, oldMax, newMin, newMax) {
-    value -= oldMin;
-    value /= oldMax - oldMin;
-    value *= newMax - newMin;
-    value += newMin;
-    return value;
-}
-
 var geographyEquation;
 
 //Function to evaluate a geography's value based on the user's formula
@@ -67,8 +58,8 @@ var loadEquationFromInput = function () {
     var input = $('#mathBox').attr('value');
 
     input = input.replace(/\s/g, '');
-    var resultValue = input.replace(new RegExp("[A-Za-z_][A-Za-z0-9_.]*", "igm"), function (match, i) { //Find variables and accessor strings (find groups of letters, underscores and periods)
-        if (match.indexOf('Math.') == 0) //No error checking here
+    var resultValue = input.replace(new RegExp("[\$]?[A-Za-z_][A-Za-z0-9_.]*", "igm"), function (match, i) { //Find variables and accessor strings (find groups of letters, underscores and periods)
+        if (match.indexOf('Math.') == 0) //No error checking here, no support for aggregate functions
             return match;
 
         if (input[i + match.length] == '(') { //If the string is trying to compute something, don't evaluate it as a census variable
@@ -80,13 +71,22 @@ var loadEquationFromInput = function () {
                 return;
             }
         }
-
-
-        if (loadedDatasets.indexOf(match) == -1)
-            if (loadData(match) == false) {
+                                         
+                                         
+        if (loadedDatasets.indexOf(match ) == -1)
+            if (loadData(match.replace('$', '')) == false) {
                 error = true;
                 return;
             }
+
+        if (match.indexOf('$') == 0) {
+            var values = [];
+            $.each(loadedGeographies, function (index, value) {
+                values.push(value[match.replace('$', '')]);
+            });
+
+            return '[' + values.toString() + ']';
+        }
 
         return '(geo["' + match + '"])';
     });

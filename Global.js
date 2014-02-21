@@ -76,3 +76,32 @@ if (!String.prototype.format) {
         });
     };
 }
+
+//Function to scale a number from a source scale to a destination scale
+var scale = function (value, oldMin, oldMax, newMin, newMax) {
+    value -= oldMin;
+    value /= oldMax - oldMin;
+    value *= newMax - newMin;
+    value += newMin;
+    return value;
+}
+
+//Custom math functions
+Math.max2 = Math.max;
+Math.min2 = Math.min;
+
+Math.max = function (arg1, arg2) {
+    if (arg1 instanceof Array)
+        return Math.max2.apply(null, arg1);
+    else
+        return Math.max2(arg1, arg2);
+}
+
+Math.min = function (arg1, arg2) {
+    if (arg1 instanceof Array)
+        return Math.min2.apply(null, arg1);
+    else
+        return Math.min2(arg1, arg2);
+}
+
+Math.scale = scale;

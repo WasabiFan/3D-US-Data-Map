@@ -51,20 +51,25 @@
     <div id="fps"></div>
 
     <div id="controlContainer">
-        <!-- Help button-->
-        <a id="helpButton" onclick="$('#helpDialog').dialog('open');"></a>
 
-        <!-- Box for user value expressions-->
-        <input id="mathBox" value="totalPopulation" placeholder="Equation" />
+        <div id="controlGroup1">
+            <!-- Box for user value expressions-->
+            <input id="mathBox" value="totalPopulation" placeholder="Equation" />
+        </div>
 
-        <!-- Map type drop-down menu-->
-        <select id="geoType">
-            <option value="county">Counties</option>
-            <option value="state" selected="selected">States</option>
-        </select>
+        <div id="controlGroup2">
+            <!-- Help button-->
+            <a id="helpButton" onclick="$('#helpDialog').dialog('open');"></a>
 
-        <!-- Submit button-->
-        <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
+            <!-- Map type drop-down menu-->
+            <select id="geoType">
+                <option value="county">Counties</option>
+                <option value="state" selected="selected">States</option>
+            </select>
+
+            <!-- Submit button-->
+            <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
+        </div>
     </div>
 
     <div id="dataBox">

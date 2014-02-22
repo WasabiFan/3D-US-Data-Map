@@ -299,7 +299,9 @@ var initiateAnimations = function () {
 }
 
 var helpResize = function () {
-    $("#helpAccordion").accordion("refresh");
+    $('#helpDialog').height(window.innerHeight * 0.65);
+    $('my-selector').dialog('option', 'position', 'center');
+    $("#helpAccordion").accordion("refresh");    
 };
 
 $(document).ready(function () { //Document is ready
@@ -320,7 +322,7 @@ $(document).ready(function () { //Document is ready
 
         close: resumeRender,
         title: 'Math Box Help',
-        width: 900, height: 750
+        width: '60%', height: 500
     });
 
     //Create the help accordion

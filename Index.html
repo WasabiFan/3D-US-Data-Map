@@ -56,20 +56,29 @@
             <!-- Box for user value expressions-->
             <input id="mathBox" value="totalPopulation" placeholder="Equation" />
         </div>
-
         <div id="controlGroup2">
-            <!-- Help button-->
-            <a id="helpButton" onclick="$('#helpDialog').dialog('open');"></a>
 
-            <!-- Map type drop-down menu-->
-            <select id="geoType">
-                <option value="county">Counties</option>
-                <option value="state" selected="selected">States</option>
-            </select>
 
-            <!-- Submit button-->
-            <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
+            <div id="controlGroup2-inner">
+
+                <!-- Help button-->
+                <a id="helpButton" onclick="$('#helpDialog').dialog('open');"></a>
+
+                <!-- Map type drop-down menu-->
+                <select id="geoType">
+                    <option value="county">Counties</option>
+                    <option value="state" selected="selected">States</option>
+                </select>
+
+                <!-- Submit button-->
+                <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
+            </div>
+
+            <span id="tabCap">
+                <i id="tabCap-inner"></i>
+            </span>
         </div>
+
     </div>
 
     <div id="dataBox">

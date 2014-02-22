@@ -123,7 +123,7 @@ button:active{
 
 #controlContainer {
     position:fixed;
-    min-height:30px;
+    height:32px;
     width:100%;
     background-color:lightgray;
     border-top: 3px solid #666;
@@ -132,14 +132,14 @@ button:active{
 #mathBox { /*Data expression input box*/
     margin: 5px;
     float: left;
-    width:50em;
+    width:99%;
     font-family:Consolas;
     
-    transition-duration:0.5s;
+    /*transition-duration:0.5s;
 }
 
 #mathBox:focus {
-    width:99%;
+    width:99%;*/
 }
 
 #geoType { /*Drop-down menu for geoType selection*/
@@ -184,4 +184,32 @@ button:active{
 
 #controlGroup2 {
     float:right;
+}
+
+#controlGroup2-inner {
+    float:right;
+    background-color:lightgray;
+}
+
+#tabCap {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+
+    float:right;
+}
+
+#tabCap-inner {
+    position: absolute;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    border: 32px solid lightgray;
+    border-top: none;
+    border-right: none;
+    border-bottom-left-radius: 32px;
+    left: 0px;
+    top: 0px;
 }

@@ -63,16 +63,10 @@ var loadEquationFromInput = function () {
             return match;
 
         if (input[i + match.length] == '(') { //If the string is trying to compute something, don't evaluate it as a census variable
-            if (Math[match] != undefined)
-                return 'Math.' + match;
-            else {
-                logError('"' + match + '" is not a Math function.');
-                error = true;
-                return;
-            }
+            //delay resolving the function until eval time
+            return "math_function(\"" + match + "\")";
         }
-                                         
-                                         
+
         if (loadedDatasets.indexOf(match ) == -1)
             if (loadData(match.replace('$', '')) == false) {
                 error = true;
@@ -90,6 +84,7 @@ var loadEquationFromInput = function () {
 
         return '(geo["' + match + '"])';
     });
+    console.log("equation = " + String(resultValue));
 
     if (error)
         geographyEquation = undefined;

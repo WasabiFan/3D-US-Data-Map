@@ -85,23 +85,53 @@ var scale = function (value, oldMin, oldMax, newMin, newMax) {
     value += newMin;
     return value;
 }
+custom_math = Object();
+custom_math.scale = scale;
 
-//Custom math functions
-Math.max2 = Math.max;
-Math.min2 = Math.min;
+//Feel free to append any other available modules directly to this global.
+//The modules are checked in order for the first one which contains a
+//given math function.
+var math_modules = [custom_math, Math, d3];
+//Some modules take Arrays, e.g. func([1,2,3,4])
+//List here the modules which apply functions to arguments, e.g. func(1,2,3,4)
+var math_apply = [custom_math, Math];
 
-Math.max = function (arg1, arg2) {
-    if (arg1 instanceof Array)
-        return Math.max2.apply(null, arg1);
+//Function to prepare math functions for processing properties
+var math_function = function (function_name) {
+    var module = null;
+    //Find which module contains the given function
+    for (var i in math_modules) {
+        var this_module = math_modules[i];
+        if (this_module.hasOwnProperty(function_name) &&
+            typeof(this_module[function_name]) === "function") {
+                module = this_module;
+                break;
+        }
+    }
+    //If no module is found, publish error and return null function
+    if (module === null) {
+        logError('No math module was found for ' + String(function_name), true);
+        return function () {};
+    }
+    //2-ary functions might need special handling if given a list
+    if (module[function_name].length === 2) {
+        //generate a function which wraps around the given function
+        return function (arg1, arg2) {
+            if (arg1 instanceof Array && arg2 === undefined) {
+                if (math_apply.indexOf(module) != -1)
+                    //Unwrap the array into arguments if only one array is
+                    //given and the module applies its functions
+                    return module[function_name].apply(null, arg1);
+                else
+                    //Passthrough the array into the function
+                    return module[function_name](arg1);
+            }
+            else
+                //Passthrough the arguments to the function
+                return module[function_name](arg1, arg2)
+        };
+    }
+    //Any other arity might as well use the original function
     else
-        return Math.max2(arg1, arg2);
+        return module[function_name]
 }
-
-Math.min = function (arg1, arg2) {
-    if (arg1 instanceof Array)
-        return Math.min2.apply(null, arg1);
-    else
-        return Math.min2(arg1, arg2);
-}
-
-Math.scale = scale;

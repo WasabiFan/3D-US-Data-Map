@@ -298,6 +298,10 @@ var initiateAnimations = function () {
     }
 }
 
+var helpResize = function () {
+    $("#helpAccordion").accordion("refresh");
+};
+
 $(document).ready(function () { //Document is ready
     //Get the desired geography type from URL or fallback to the selectbox
     var geoType = getQuerystring('geoType') || $('#geoType').val();
@@ -306,7 +310,21 @@ $(document).ready(function () { //Document is ready
     $('#container').height(window.innerHeight - 10);
 
     //Create the help dialog
-    $('#helpDialog').dialog({ autoOpen: false, title: 'Available Properties for Each Geography', width: 900, height: 750 });
+    $('#helpDialog').dialog({
+        autoOpen: false,
+        resize: helpResize,
+        open: function () {
+            pauseRender();
+            helpResize();
+        },
+
+        close: resumeRender,
+        title: 'Math Box Help',
+        width: 900, height: 750
+    });
+
+    //Create the help accordion
+    $('#helpAccordion').accordion({ heightStyle: "fill" });
 
     //Create and display the loading dialog
     $('#loadingDialog').dialog({ title: 'Loading...', dialogClass: 'no-close', modal: true });

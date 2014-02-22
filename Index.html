@@ -47,22 +47,26 @@
         <progress />
     </div>
 
-    <!-- Box for user value expressions-->
-    <input id="mathBox" value="totalPopulation" />
-
-    <!-- Map type drop-down menu-->
-    <select id="geoType">
-        <option value="county">Counties</option>
-        <option value="state" selected="selected">States</option>
-    </select>
-
-    <!-- Submit button-->
-    <button id="mathSubmit" onclick="mathSubmitClicked();">Reload Map</button>
     <!-- FPS counter-->
     <div id="fps"></div>
-    <!-- Help button-->
-    <button id="helpButton" onclick="$('#helpDialog').dialog('open');">Help</button>
-    
+
+    <div id="controlContainer">
+        <!-- Help button-->
+        <a id="helpButton" onclick="$('#helpDialog').dialog('open');"></a>
+
+        <!-- Box for user value expressions-->
+        <input id="mathBox" value="totalPopulation" placeholder="Equation" />
+
+        <!-- Map type drop-down menu-->
+        <select id="geoType">
+            <option value="county">Counties</option>
+            <option value="state" selected="selected">States</option>
+        </select>
+
+        <!-- Submit button-->
+        <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
+    </div>
+
     <div id="dataBox">
         <h4 style="margin-top:-20px" id="selectedName">Selected Info</h4>
         <h5 style="margin-top:1px" id="selectedInfo"></h5>

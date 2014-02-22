@@ -58,6 +58,7 @@ $(document).ready(function () {
 
     //Register for click
     $('#container').click(function (e) {
+        $('#mathBox').blur();
 
         if (selected != undefined) { //Reset the currently selected shape
             colorObject3D(selected, selected.userData['color']);

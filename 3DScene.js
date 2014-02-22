@@ -5,6 +5,13 @@
 
 var framesInLastSecond = 0; //Variable to store fps
 setInterval(function () {//Update the fps counter each second
+
+    if (!shouldRender) {
+        $('#fps').html('');
+        return;
+    }
+
+
 	$('#fps').html(framesInLastSecond);
 	framesInLastSecond = 0;
 }, 1000);
@@ -85,7 +92,10 @@ var loadScene = function () { //Function to load the basic scene
 	render();
 };
 
+var shouldRender = true;
 var render = function () { //Render loop
+    if (!shouldRender)
+        return;
 
 	//Update the orbit
 	controls.update();
@@ -110,3 +120,14 @@ var render = function () { //Render loop
 	//Increment the frame counter
 	framesInLastSecond++;
 };
+
+var pauseRender = function () {
+    shouldRender = false;
+}
+
+var resumeRender = function () {
+    shouldRender = true;
+
+    //Register for the next frame
+    requestAnimationFrame(render);
+}

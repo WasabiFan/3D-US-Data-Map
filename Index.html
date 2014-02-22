@@ -61,7 +61,7 @@
     <!-- FPS counter-->
     <div id="fps"></div>
     <!-- Help button-->
-    <button id="helpButton" onclick="$('#helpDialog').dialog('open');">?</button>
+    <button id="helpButton" onclick="$('#helpDialog').dialog('open');">Help</button>
     
     <div id="dataBox">
         <h4 style="margin-top:-20px" id="selectedName">Selected Info</h4>
@@ -70,162 +70,308 @@
     </div>
 
     <!-- Help dialog-->
-    <div id="helpDialog">
-        <div style="font-size: small">
+    <div id="helpDialog" style="height:100%">
+        <!--<div style="font-size: small">
+            The math box can be used to select the data that is plotted. Equations can use any of the variables listed below, as well as any US census variables directly. Both standard arithmetic operators (+, -, *, and /), and many of the normal mathematical functions can be used.
+
+
             This is a list of the possible identifiers that can be loaded from the census API. The variables will evaluate to their census values when you reload the map.
             <br />
-            Data can also be requested with a census data identifier, by using the following format:<br />
+            <br />
+        </div>-->
+        <div id="helpAccordion" style="height:auto">
+            <h3>Mathematical Operators</h3>
+            <div>
+                <table border="1">
+                    <tr>
+                        <th style="width: 20%;">Operator / Function</th>
+                        <th>Description</th>
+                        <th style="width: 7%;">Aggregate?</th>
+                    </tr>
+                    <tr>
+                        <td>x + y</td>
+                        <td>Returns the sum of x and y</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>x - y</td>
+                        <td>Returns the difference of x and y</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>x * y</td>
+                        <td>Returns the product of x and y</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>x / y</td>
+                        <td>Returns the quotient of x and y</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>-x</td>
+                        <td>Returns the negative value of x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>x % y</td>
+                        <td>Returns the remainder of division of x and y </td>
+                        <td>No</td>
+                    </tr>
 
-            <div class="code">P0010001</div>
-            <br />
-            <br />
+                    <tr>
+                        <td>abs(x)</td>
+                        <td>Returns the absolute value of x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>acos(x)</td>
+                        <td>Returns the arccosine of x, in radians</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>asin(x)</td>
+                        <td>Returns the arcsine of x, in radians</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>atan(x)</td>
+                        <td>
+                            Returns the arctangent of x as a numeric value between
+                            -PI/2 and PI/2 radians
+                        </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>atan2(y,x)</td>
+                        <td>Returns the arctangent of the quotient of its arguments</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>ceil(x)</td>
+                        <td>
+                            Returns x, rounded upwards to the
+                            nearest integer
+                        </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>cos(x)</td>
+                        <td>Returns the cosine of x (x is in radians)</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>exp(x)</td>
+                        <td>Returns the value of E<sup>x</sup></td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>floor(x)</td>
+                        <td>
+                            Returns x, rounded downwards to the
+                            nearest integer
+                        </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>log(x)</td>
+                        <td>Returns the natural logarithm (base E) of x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>max(x,y,z,...,n)</td>
+                        <td>Returns the number with the highest value</td>
+                        <td>Yes </td>
+                    </tr>
+                    <tr>
+                        <td>min(x,y,z,...,n)</td>
+                        <td>Returns the number with the lowest value</td>
+                        <td>Yes </td>
+                    </tr>
+                    <tr>
+                        <td>pow(x,y)</td>
+                        <td>Returns the value of x to the power of y</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>random()</td>
+                        <td>Returns a random number between 0 and 1</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>round(x)</td>
+                        <td>Rounds x to the nearest integer</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>sin(x)</td>
+                        <td>Returns the sine of x (x is in radians)</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>sqrt(x)</td>
+                        <td>Returns the square root of x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>tan(x)</td>
+                        <td>Returns the tangent of an angle</td>
+                        <td>No</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Data Variables</h3>
+            <div>
+                <table border="1">
+                    <tr>
+                        <th>Property</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>totalPopulation</td>
+                        <td>Total number of people</td>
+                    </tr>
+                    <tr>
+                        <td>malePopulation</td>
+                        <td>Total number of men</td>
+                    </tr>
+                    <tr>
+                        <td>femalePopulation</td>
+                        <td>Total number of women</td>
+                    </tr>
+                    <tr>
+                        <td>whitePopulation</td>
+                        <td>Total number of white people</td>
+                    </tr>
+                    <tr>
+                        <td>blackPopulation</td>
+                        <td>Total number of black people</td>
+                    </tr>
+                    <tr>
+                        <td>americanIndianPopulation</td>
+                        <td>Total number of American Indians</td>
+                    </tr>
+                    <tr>
+                        <td>asianPopulation</td>
+                        <td>Total number of asian people</td>
+                    </tr>
+                    <tr>
+                        <td>pacificIslanderPopulation</td>
+                        <td>Total number of Pacific Islanders</td>
+                    </tr>
+                    <tr>
+                        <td>nonDefinedRacePopulation</td>
+                        <td>Total number of other people</td>
+                    </tr>
+                    <tr>
+                        <td>multipleRacePopulation</td>
+                        <td>Total number of multi-raced people</td>
+                    </tr>
+                    <tr>
+                        <td>under18Population</td>
+                        <td>Total number of people under 18 years of age</td>
+                    </tr>
+                    <tr>
+                        <td>medianYearlyEarnings</td>
+                        <td>Average yearly earnings</td>
+                    </tr>
+                    <tr>
+                        <td>commuteTime</td>
+                        <td>Average commute time</td>
+                    </tr>
+                    <tr>
+                        <td>medianAnnualHouseholdIncome</td>
+                        <td>Average income for one household</td>
+                    </tr>
+                    <tr>
+                        <td>medianNumberOfRooms</td>
+                        <td>Average number of rooms per house</td>
+                    </tr>
+                    <tr>
+                        <td>monthlyHousingCost</td>
+                        <td>Average cost of housing per month</td>
+                    </tr>
+                    <tr>
+                        <td>medianAgeFemale</td>
+                        <td>Average female age</td>
+                    </tr>
+                    <tr>
+                        <td>medianAgeMale</td>
+                        <td>Average male age</td>
+                    </tr>
+                    <tr>
+                        <td>nativePopulation</td>
+                        <td>Number of natives</td>
+                    </tr>
+                    <tr>
+                        <td>foreignPopulation</td>
+                        <td>Number of foreigners</td>
+                    </tr>
+                    <tr>
+                        <td>medianPublicTransportationToWorkAge</td>
+                        <td>Average age that people start taking public transportation to work</td>
+                    </tr>
+                    <tr>
+                        <td>onePersonHouseholds</td>
+                        <td>Total number of one-person households</td>
+                    </tr>
+                    <tr>
+                        <td>twoPersonHouseholds</td>
+                        <td>Total number of two-person households</td>
+                    </tr>
+                    <tr>
+                        <td>threePersonHouseholds</td>
+                        <td>Total number of three-person households</td>
+                    </tr>
+                    <tr>
+                        <td>fourOrMorePersonHouseholds</td>
+                        <td>Total number of households with four or more rooms</td>
+                    </tr>
+                    <tr>
+                        <td>familyHouseholds</td>
+                        <td>Total number of family households</td>
+                    </tr>
+                    <tr>
+                        <td>nonFamilyHouseholds</td>
+                        <td>Total number of non-family households</td>
+                    </tr>
+                    <tr>
+                        <td>medianAgeAtFirstMarriageMale</td>
+                        <td>Average age that men get married</td>
+                    </tr>
+                    <tr>
+                        <td>medianAgeAtFirstMarriageFemale</td>
+                        <td>Average age that women get married</td>
+                    </tr>
+                    <tr>
+                        <td>povertyInLast12Months</td>
+                        <td>Total number of people that were below the poverty line at some point in 2010</td>
+                    </tr>
+                    <tr>
+                        <td>medianHouseholdIncome</td>
+                        <td>Average household income</td>
+                    </tr>
+                    <tr>
+                        <td>annualPerCapitaIncome</td>
+                        <td>Average yearly income per person</td>
+                    </tr>
+                    <tr>
+                        <td>mobileHomePopulation</td>
+                        <td>Total number of people living in mobile homes</td>
+                    </tr>
+                    <tr>
+                        <td>homelessPopulation</td>
+                        <td>Total number of homeless people</td>
+                    </tr>
+                    <tr>
+                        <td>aggregateNumberOfVehiclesAvailible</td>
+                        <td>Average number of vehicles that people have available to them</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <table border="1">
-            <tr>
-                <th>Property</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td>totalPopulation</td>
-                <td>Total number of people</td>
-            </tr>
-            <tr>
-                <td>malePopulation</td>
-                <td>Total number of men</td>
-            </tr>
-            <tr>
-                <td>femalePopulation</td>
-                <td>Total number of women</td>
-            </tr>
-            <tr>
-                <td>whitePopulation</td>
-                <td>Total number of white people</td>
-            </tr>
-            <tr>
-                <td>blackPopulation</td>
-                <td>Total number of black people</td>
-            </tr>
-            <tr>
-                <td>americanIndianPopulation</td>
-                <td>Total number of American Indians</td>
-            </tr>
-            <tr>
-                <td>asianPopulation</td>
-                <td>Total number of asian people</td>
-            </tr>
-            <tr>
-                <td>pacificIslanderPopulation</td>
-                <td>Total number of Pacific Islanders</td>
-            </tr>
-            <tr>
-                <td>nonDefinedRacePopulation</td>
-                <td>Total number of other people</td>
-            </tr>
-            <tr>
-                <td>multipleRacePopulation</td>
-                <td>Total number of multi-raced people</td>
-            </tr>
-            <tr>
-                <td>under18Population</td>
-                <td>Total number of people under 18 years of age</td>
-            </tr>
-            <tr>
-                <td>medianYearlyEarnings</td>
-                <td>Average yearly earnings</td>
-            </tr>
-            <tr>
-                <td>commuteTime</td>
-                <td>Average commute time</td>
-            </tr>
-            <tr>
-                <td>medianAnnualHouseholdIncome</td>
-                <td>Average income for one household</td>
-            </tr>
-            <tr>
-                <td>medianNumberOfRooms</td>
-                <td>Average number of rooms per house</td>
-            </tr>
-            <tr>
-                <td>monthlyHousingCost</td>
-                <td>Average cost of housing per month</td>
-            </tr>
-            <tr>
-                <td>medianAgeFemale</td>
-                <td>Average female age</td>
-            </tr>
-            <tr>
-                <td>medianAgeMale</td>
-                <td>Average male age</td>
-            </tr>
-            <tr>
-                <td>nativePopulation</td>
-                <td>Number of natives</td>
-            </tr>
-            <tr>
-                <td>foreignPopulation</td>
-                <td>Number of foreigners</td>
-            </tr>
-            <tr>
-                <td>medianPublicTransportationToWorkAge</td>
-                <td>Average age that people start taking public transportation to work</td>
-            </tr>
-            <tr>
-                <td>onePersonHouseholds</td>
-                <td>Total number of one-person households</td>
-            </tr>
-            <tr>
-                <td>twoPersonHouseholds</td>
-                <td>Total number of two-person households</td>
-            </tr>
-            <tr>
-                <td>threePersonHouseholds</td>
-                <td>Total number of three-person households</td>
-            </tr>
-            <tr>
-                <td>fourOrMorePersonHouseholds</td>
-                <td>Total number of households with four or more rooms</td>
-            </tr>
-            <tr>
-                <td>familyHouseholds</td>
-                <td>Total number of family households</td>
-            </tr>
-            <tr>
-                <td>nonFamilyHouseholds</td>
-                <td>Total number of non-family households</td>
-            </tr>
-            <tr>
-                <td>medianAgeAtFirstMarriageMale</td>
-                <td>Average age that men get married</td>
-            </tr>
-            <tr>
-                <td>medianAgeAtFirstMarriageFemale</td>
-                <td>Average age that women get married</td>
-            </tr>
-            <tr>
-                <td>povertyInLast12Months</td>
-                <td>Total number of people that were below the poverty line at some point in 2010</td>
-            </tr>
-            <tr>
-                <td>medianHouseholdIncome</td>
-                <td>Average household income</td>
-            </tr>
-            <tr>
-                <td>annualPerCapitaIncome</td>
-                <td>Average yearly income per person</td>
-            </tr>
-            <tr>
-                <td>mobileHomePopulation</td>
-                <td>Total number of people living in mobile homes</td>
-            </tr>
-            <tr>
-                <td>homelessPopulation</td>
-                <td>Total number of homeless people</td>
-            </tr>
-            <tr>
-                <td>aggregateNumberOfVehiclesAvailible</td>
-                <td>Average number of vehicles that people have available to them</td>
-            </tr>
-        </table>
+
     </div>
     <!-- Main div to render the scene in to-->
     <div id="container" />

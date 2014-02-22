@@ -86,7 +86,7 @@ button:active{
 #helpButton {/*Button to open the help dialog*/
     position: fixed;
     margin-left: 425px;
-    width: 30px;
+    width: 60px;
 }
 
 #helpDialog {/*JQuery UI dialog for displaying help content*/

@@ -122,6 +122,7 @@ button:active{
 }
 
 #controlContainer {
+    position:fixed;
     height:30px;
     width:100%;
     background-color:lightgray;

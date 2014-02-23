@@ -88,8 +88,10 @@ var loadEquationFromInput = function () {
 
     if (error)
         geographyEquation = undefined;
-    else
+    else {
         geographyEquation = resultValue;
+        window.location.hash = encodeURIComponent($('#mathBox').attr('value'));
+    }
 }
 
 var isLoadingMap = false;
@@ -325,6 +327,9 @@ $(document).ready(function () { //Document is ready
 
     //Create and display the loading dialog
     $('#loadingDialog').dialog({ title: 'Loading...', dialogClass: 'no-close', modal: true });
+
+    if (window.location.hash && window.location.hash.replace('#', '').length > 0)
+        $('#mathBox').attr('value', decodeURIComponent(window.location.hash.replace('#','')));
 
     //Use Deferred to ensure properties are loaded before they are accessed
     //Associate properties with dataSets

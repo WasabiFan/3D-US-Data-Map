@@ -45,6 +45,8 @@ var censusVariables = {// A JSON object to store the basic API variables
     aggregateNumberOfVehiclesAvailible: 'B25046_001E',
 };
 
+var stateIDTable = {};
+
 var censusPropURL = function (year, dataSet) {
     // Seems like CORS is broken for this call
     //return "http://api.census.gov/data/" + year + "/" + dataSet + "/variables.json"
@@ -89,16 +91,25 @@ var geoInit = function () {// Loads the basic census data
                 logError(errorStrings.censusError);
             }
         });
-
-        d3.tsv("Data/CountyData.txt", function (error, countyData) {// Use D3 to load the county area data from a tab seperated values file
-            for (var i in countyData) {// Iterate through each row in countyData
-                //Set the water area property of the county to the water area from countyData
-                loadedGeographies[countyData[i]['GEOID']]['waterArea'] = countyData[i]['AWATER'];
-                //Set the land area property of the county to the land area obtained in countyData
-                loadedGeographies[countyData[i]['GEOID']]['landArea'] = countyData[i]['ALAND'];
+        $.ajax({
+            url: "Data/CountyData.txt",
+            dataType: 'text',
+            async: false,
+            success: function (data) {
+                var countyData = d3.tsv.parse(data);
+                for (var i in countyData) {// Iterate through each row in countyData
+                    //Set the water area property of the county to the water area from countyData
+                    loadedGeographies[countyData[i]['GEOID']]['waterArea'] = countyData[i]['AWATER'];
+                    //Set the land area property of the county to the land area obtained in countyData
+                    loadedGeographies[countyData[i]['GEOID']]['landArea'] = countyData[i]['ALAND'];
+                    loadedGeographies[countyData[i]['GEOID']]['totalArea'] = parseInt(countyData[i]['ALAND']) + parseInt(countyData[i]['AWATER']);
+                }
+                //Note that we have loaded land and water area
+                loadedDatasets.push('waterArea', 'landArea', 'totalArea');
+            },
+            error: function (XHR, textStatus, errorThrown) {
+                logError(errorStrings.areaLoadingError);
             }
-            //Note that we have loaded land and water area
-            loadedDatasets.push('waterArea', 'landArea');
         });
     }
     else {// If the geoType is state, load the basic state info
@@ -113,9 +124,25 @@ var geoInit = function () {// Loads the basic census data
                         i++;
                         return;
                     }
-
                     // Add the new object to the array
                     loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
+                    stateIDTable[val[0]] = val[1];
+                });
+                $.ajax({
+                    url: 'Data/StateData.csv',
+                    dataType: 'text',
+                    async: false,
+                    success: function(data){
+                        $.each(d3.csv.parse(data), function (key, val) {
+                            loadedGeographies[stateIDTable[val.State]]['landArea'] = val['Land Area'];
+                            loadedGeographies[stateIDTable[val.State]]['waterArea'] = val['Water Area'];
+                            loadedGeographies[stateIDTable[val.State]]['totalArea'] = val['Total Area'];
+                        });
+                        loadedDatasets.push('landArea', 'waterArea', 'totalArea');
+                    },
+                    error: function (XHR, textStatus, errorThrown) {
+                        logError(errorStrings.areaLoadingError);
+                    }
                 });
             },
             error: function (XHR, textStatus, errorThrown) {

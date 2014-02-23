@@ -60,6 +60,7 @@ var logError = function (errorMessage, promptUser) {
 //Error strings
 var errorStrings = {
     censusError: 'There was an error loading data from the Census API.',
+    areaLoadingError: 'There was an error loading the area data.',
     shapeDefError: 'There was an error loading the shape definition SVGs.',
     evalError: 'An error occurred while evaluating the formula for geography {geographyName}.'
 };

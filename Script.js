@@ -23,6 +23,10 @@ var switchGeoType = function (type) { //Function to reload the map and associate
 };
 
 var mathSubmitClicked = function () { //Callback for the refresh map data button
+    reloadMap();
+};
+
+var reloadMap = function () {
     $('#loadingDialog').dialog('open'); //Display the loading dialog
     var geoType = $('#geoType').val();
     if (geoType != currentGeoType) { //The user has selected a new map type
@@ -36,7 +40,7 @@ var mathSubmitClicked = function () { //Callback for the refresh map data button
             mapObject = new THREE.Object3D(); loadMap(); //Reset and load the map
         }, 20);
     }
-};
+}
 
 var geographyEquation;
 
@@ -325,6 +329,17 @@ $(document).ready(function () { //Document is ready
     //Create the help accordion
     $('#helpAccordion').accordion({ heightStyle: "fill" });
 
+    $('.equationLink').each(function (key, linkDiv) {
+        var content = $(linkDiv).html();
+        var $linkAnchor = $('<a></a>');
+
+        $linkAnchor.attr('href', 'javascript:loadEquationLink("' + content + '")');
+        $linkAnchor.html(content);
+
+        $(linkDiv).empty();
+        $(linkDiv).append($linkAnchor);
+    });
+
     //Create and display the loading dialog
     $('#loadingDialog').dialog({ title: 'Loading...', dialogClass: 'no-close', modal: true });
 
@@ -341,7 +356,11 @@ $(document).ready(function () { //Document is ready
 
         //Load the scene
         loadScene();
-        
     });
 
 });
+
+var loadEquationLink = function (equation) {
+    $('#mathBox').attr('value', equation);
+    reloadMap();
+}

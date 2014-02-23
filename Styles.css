@@ -141,6 +141,7 @@ button:active{
 	font-size: 12px;
 	padding: 4px 7px 2px;
 	vertical-align: top;
+    border: 1px solid #DFDFDF;
 }
 
 #fps{/*FPS counter*/

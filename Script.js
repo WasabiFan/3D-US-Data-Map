@@ -86,7 +86,7 @@ var loadEquationFromInput = function () {
             return '[' + values.toString() + ']';
         }
 
-        return '(geo["' + match + '"])';
+        return '(Number(geo["' + match + '"]))';
     });
     console.log("equation = " + String(resultValue));
 

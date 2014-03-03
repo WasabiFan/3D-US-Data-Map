@@ -91,11 +91,7 @@ var geoInit = function () {// Loads the basic census data
                 logError(errorStrings.censusError);
             }
         });
-        $.ajax({
-            url: "Data/CountyData.txt",
-            dataType: 'text',
-            async: false,
-            success: function (data) {
+        loadCountyData(function (data) {
                 var countyData = d3.tsv.parse(data);
                 for (var i in countyData) {// Iterate through each row in countyData
                     //Set the water area property of the county to the water area from countyData
@@ -107,10 +103,10 @@ var geoInit = function () {// Loads the basic census data
                 //Note that we have loaded land and water area
                 loadedDatasets.push('waterArea', 'landArea', 'totalArea');
             },
-            error: function (XHR, textStatus, errorThrown) {
+            function (XHR, textStatus, errorThrown) {
                 logError(errorStrings.areaLoadingError);
             }
-        });
+        );
     }
     else {// If the geoType is state, load the basic state info
         $.ajax({// Get the names of all the states
@@ -128,11 +124,7 @@ var geoInit = function () {// Loads the basic census data
                     loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
                     stateIDTable[val[0]] = val[1];
                 });
-                $.ajax({
-                    url: 'Data/StateData.csv',
-                    dataType: 'text',
-                    async: false,
-                    success: function(data){
+                loadStateData(function(data){
                         $.each(d3.csv.parse(data), function (key, val) {
                             loadedGeographies[stateIDTable[val.State]]['landArea'] = val['Land Area'];
                             loadedGeographies[stateIDTable[val.State]]['waterArea'] = val['Water Area'];
@@ -140,10 +132,10 @@ var geoInit = function () {// Loads the basic census data
                         });
                         loadedDatasets.push('landArea', 'waterArea', 'totalArea');
                     },
-                    error: function (XHR, textStatus, errorThrown) {
+                    function (XHR, textStatus, errorThrown) {
                         logError(errorStrings.areaLoadingError);
                     }
-                });
+                );
             },
             error: function (XHR, textStatus, errorThrown) {
                 logError(errorStrings.censusError);
@@ -160,7 +152,7 @@ var uscbPropertyInit = function () {
     var deferred = $.Deferred();
     // Parse available datasets
     var deferreds = $([USCB.ACS, USCB.SF1]).map(function (i,dataSet) {
-        return $.getJSON(censusPropURL(USCB.YEAR, dataSet), function (d) {
+        return loadInitProperties(censusPropURL(USCB.YEAR, dataSet), function (d) {
             // this would be nicer with .each if that could be done?
             console.log('Parsing properties for ' + dataSet);
             for (key in d.variables)

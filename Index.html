@@ -4,19 +4,16 @@
     <!--Title-->
     <title>3D Map of the US</title>
 
-    <!-- Main css-->
-    <link type="text/css" rel="stylesheet" href="Styles.css" />
+   
     <!-- Basic JQueryUI CSS-->
     <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-
+    
     <!--Main JQuery-->
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <!--Secondary JQuery File: Necessary for getting input value-->
     <script src="http://code.jquery.com/jquery-migrate-1.1.1.min.js"></script>
     <!--JQueryUI-->
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <!-- Raphael JS-->
-    <script type="text/javascript" src="raphael.js"></script>
 
     <!-- D3-->
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -25,11 +22,20 @@
     <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
     <!--Tween.js-->
     <script src="https://rawgithub.com/sole/tween.js/master/build/tween.min.js"></script>
+
+    <!----FILE LINKS-->
+    <!-- Raphael JS-->
+    <script type="text/javascript" src="raphael.js"></script>
     <!-- Three.js OrbitControls (Modified hotfix version to work with non-minified three)-->
     <script src="OrbitControls.js"></script>
 
+    <!-- Main css-->
+    <link type="text/css" rel="stylesheet" href="Styles.css" />
+
     <!-- Global.js: Basic global variables and functions-->
     <script type="text/javascript" src="Global.js"></script>
+    <!-- Data.js: Extensible local data load functions-->
+    <script type="text/javascript" src="Data.js"></script>
     <!-- Census.js: Handles Census API calls and data-->
     <script type="text/javascript" src="Census.js"></script>
     <!--  3DScene.js: Scene setup-->
@@ -38,6 +44,7 @@
     <script type="text/javascript" src="Selection.js"></script>
     <!-- Script.js: Main script file-->
     <script type="text/javascript" src="Script.js"></script>
+    <!----END FILE LINKS-->
 </head>
 <body>
     <!--Loading dialog-->

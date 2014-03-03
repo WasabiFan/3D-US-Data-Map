@@ -18,6 +18,7 @@
     "grunt-contrib-uglify": "~0.2.4",
 	"grunt-contrib-copy": "~0.5.0",	
 	"grunt-contrib-cssmin": "~0.8.0",
-	"grunt-contrib-concat": "~0.3.0"
+	"grunt-contrib-concat": "~0.3.0",
+	"grunt-gh-pages": "~0.9.1"
   }
 }

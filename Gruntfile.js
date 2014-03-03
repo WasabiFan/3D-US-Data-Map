@@ -70,7 +70,7 @@ module.exports = function (grunt) {
                 },
 
                 files: [
-                  { expand: true, src: ['Index.html'], dest: 'Build/' },
+                  { expand: true, src: ['Index.html'], dest: 'Build' },
                 ]
             },
             data: {
@@ -104,6 +104,15 @@ module.exports = function (grunt) {
                         ]
                 },
             }
+        },
+
+        'gh-pages': {
+            main: {
+                options: {
+                    base: 'Build'
+                },
+                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg']
+            }
         }
 
     });
@@ -112,6 +121,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-gh-pages');
 
     grunt.registerTask('default', function () {
         grunt.task.run('concat')
@@ -120,4 +130,7 @@ module.exports = function (grunt) {
         grunt.task.run('copy');
     });
 
+    grunt.registerTask('publish', function () {
+        grunt.task.run('gh-pages');
+    });
 }

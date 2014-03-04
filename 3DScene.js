@@ -34,8 +34,15 @@ var loadScene = function () { //Function to load the basic scene
 		NEAR = 0.1,
 		FAR = 10000;
 
-	// Create a WebGL renderer and camera
-	renderer = new THREE.WebGLRenderer();
+    // Create a renderer and camera
+
+	if (Detector.webgl)
+	    renderer = new THREE.WebGLRenderer();
+	else {
+	    $('#WebGLWarningBox').css('display', 'block');
+	    renderer = new THREE.CanvasRenderer();
+	}
+
 	camera = new THREE.PerspectiveCamera(VIEW_ANGLE,
 									ASPECT,
 									NEAR,

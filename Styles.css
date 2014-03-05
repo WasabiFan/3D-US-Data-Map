@@ -86,10 +86,10 @@ button:active{
 }
 
 .dataBox-extended {
-    height: 140px !important;
-    border-bottom-width: 0px !important;
-    border-top-width: 0px !important;
-    border-right-width: 150px !important;
+    height: 140px;
+    border-bottom-width: 0px;
+    border-top-width: 0px;
+    border-right-width: 150px;
 }
 
 #dataBox-inner {

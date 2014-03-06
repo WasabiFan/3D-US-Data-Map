@@ -104,15 +104,15 @@ var math_function = function (function_name) {
     for (var i in math_modules) {
         var this_module = math_modules[i];
         if (this_module.hasOwnProperty(function_name) &&
-            typeof(this_module[function_name]) === "function") {
-                module = this_module;
-                break;
+            typeof (this_module[function_name]) === "function") {
+            module = this_module;
+            break;
         }
     }
     //If no module is found, publish error and return null function
     if (module === null) {
         logError('No math module was found for ' + String(function_name), true);
-        return function () {};
+        return function () { };
     }
     //2-ary functions might need special handling if given a list
     if (module[function_name].length === 2) {
@@ -132,7 +132,7 @@ var math_function = function (function_name) {
                 return module[function_name](arg1, arg2)
         };
     }
-    //Any other arity might as well use the original function
+        //Any other arity might as well use the original function
     else
         return module[function_name]
 }

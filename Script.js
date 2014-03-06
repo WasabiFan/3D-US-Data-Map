@@ -1,4 +1,4 @@
-/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
+﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
 /// <reference path="http://code.jquery.com/ui/1.10.3/jquery-ui.js" />
 /// <reference path="Global.js" />
 /// <reference path="https://rawgithub.com/mrdoob/three.js/master/build/three.js" />
@@ -12,7 +12,7 @@ var switchGeoType = function (type) { //Function to reload the map and associate
     loadedGeographies = {}; //Clear the loaded objects
     loadedDatasets = []; //Clear the list of data that has been loaded from the census api
 
-    if(scene && (scene.children.indexOf(mapObject) > -1))
+    if (scene && (scene.children.indexOf(mapObject) > -1))
         scene.remove(mapObject); //Remove the map from the scene
 
     mapObject = new THREE.Object3D();//Re-initialize the map object
@@ -42,6 +42,7 @@ var reloadMap = function () {
     }
 }
 
+//Global variable to store current equation after it's parsed
 var geographyEquation;
 
 //Function to evaluate a geography's value based on the user's formula
@@ -52,18 +53,21 @@ var processGeographyValue = function (geo) {
         //Return the final value
         return eval(geographyEquation);
     else
+        //Error
         return -1;
 };
 
+//Function to load and parse the user's formula to validate it
 var loadEquationFromInput = function () {
     var error = false;
 
     //Get the user input
     var input = $('#mathBox').attr('value');
 
+    //Remove whitespace
     input = input.replace(/\s/g, '');
     var resultValue = input.replace(new RegExp("[\$]?[A-Za-z_][A-Za-z0-9_.]*", "igm"), function (match, i) { //Find variables and accessor strings (find groups of letters, underscores and periods)
-        if (match.indexOf('Math.') == 0) //No error checking here, no support for aggregate functions
+        if (match.indexOf('Math.') == 0) //basic math functions without any modifications or additions
             return match;
 
         if (input[i + match.length] == '(') { //If the string is trying to compute something, don't evaluate it as a census variable
@@ -71,13 +75,13 @@ var loadEquationFromInput = function () {
             return "math_function(\"" + match + "\")";
         }
 
-        if (loadedDatasets.indexOf(match ) == -1)
+        if (loadedDatasets.indexOf(match) == -1) //Assume it's a dataset, load it if it isn't already
             if (loadData(match.replace('$', '')) == false) {
                 error = true;
                 return;
             }
 
-        if (match.indexOf('$') == 0) {
+        if (match.indexOf('$') == 0) { //Embed it as an array if it's an aggregate variable (starts with a '$')
             var values = [];
             $.each(loadedGeographies, function (index, value) {
                 values.push(value[match.replace('$', '')]);
@@ -86,13 +90,13 @@ var loadEquationFromInput = function () {
             return '[' + values.toString() + ']';
         }
 
-        return '(Number(geo["' + match + '"]))';
+        return '(Number(geo["' + match + '"]))'; //Return the processed string to load the property at eval time; also converts it to a number
     });
     console.log("equation = " + String(resultValue));
 
-    if (error)
+    if (error) //There was an error, reset the value
         geographyEquation = undefined;
-    else {
+    else { //Everything worked, save the result and add the equation to the hash
         geographyEquation = resultValue;
         window.location.hash = encodeURIComponent($('#mathBox').attr('value'));
     }
@@ -103,14 +107,17 @@ var mapLoadErrors = [];
 
 //Function to load the map
 var loadMap = function () {
-    if (isLoadingMap) //If the loadMap function is already running, 
+    if (isLoadingMap) //If the loadMap function is already running, we don't need to do it twice
         return;
 
     mapLoadErrors = [];
 
     console.log('Loading map...');
-    //Sets the variable indicating that the loadMap function is running to true
+    //Figuratively lock the function so that we can make sure we aren't loading twice
     isLoadingMap = true;
+
+    //Stop rendering, because the user can't see it
+    pauseRender();
 
     //Find the min and max values in the map
     var min = Infinity, max = 0;
@@ -125,11 +132,11 @@ var loadMap = function () {
         }
     }
 
-    $.ajax({ //Get the svg
+    $.ajax({ //Load the svg
         type: "GET",
         url: svgIndex[currentGeoType],
         dataType: "xml",
-        async:true,
+        async: true,
         success: function (xml) {
 
             //Get the svg element in the xml
@@ -150,7 +157,11 @@ var loadMap = function () {
                 if ((currentGeoType == geoType.county && id.length == 4) || (currentGeoType == geoType.state && id.length == 1))
                     id = '0' + id.toString();
 
-                if (id != undefined && ((currentGeoType == geoType.county && id.length == 5) || (currentGeoType == geoType.state && id.length == 2)) && loadedGeographies[id] != undefined) { //Make sure that the path has an id
+                if (id != undefined
+                        && ((currentGeoType == geoType.county && id.length == 5)
+                            || (currentGeoType == geoType.state && id.length == 2))
+                        && loadedGeographies[id] != undefined) { //Make sure that the path has an id
+
                     id = getGEOID(id);
 
                     //Get the path
@@ -167,7 +178,7 @@ var loadMap = function () {
 
                     //Loop through the path and draw it
                     for (var i = 0; i < path.length; i++) {
-                                                
+
                         switch (path[i][0]) {
                             case 'M': //Move to
                                 shapes.push(new THREE.Shape());
@@ -210,33 +221,32 @@ var loadMap = function () {
                     //Set the target extrusion for the animation
                     loadedGeographies[id].targetExtrusion = extrude;
 
-                    //Set the current extrusion to be used for the animation
-                    loadedGeographies[id].currentExtrusion = 0;
-
                     for (var i in shapes) {//Iterate through the generated shapes
                         if (shapes[i].actions.length > 1) {
-                            try{
+                            try {
                                 //Create a mesh with a geometry and a material
-                                loadedGeographies[id].mesh.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shapes[i], { amount: extrude, bevelEnabled: false }), new THREE.MeshLambertMaterial({ color: color })));
+                                loadedGeographies[id].mesh.add(new THREE.Mesh(
+                                    new THREE.ExtrudeGeometry(shapes[i], { amount: extrude, bevelEnabled: false }),
+                                    new THREE.MeshLambertMaterial({ color: color })));
                             }
                             catch (e) {
-                                console.log(e);
+                                logError(e);
                             }
                         }
                     }
 
                     //Store data about the shape in the object's userData
                     loadedGeographies[id].mesh.userData['geographyName'] = loadedGeographies[id].name;
-                    loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;                    
+                    loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;
                     loadedGeographies[id].mesh.userData['geoType'] = loadedGeographies[id].geotype;
-                    
+
 
                     //Add the geography to the map object
                     mapObject.add(loadedGeographies[id].mesh);
                 }
                 else
                     console.log('ID: ' + id + ' Geography:' + loadedGeographies[id]);
-                
+
             });
 
             //Set the rotation and scale of the map
@@ -246,17 +256,22 @@ var loadMap = function () {
             //Add the map to the scene
             scene.add(mapObject);
 
+            //Resume rendering now that there's something to see
+            resumeRender();
+
             //Close the loading dialog
             $('#loadingDialog').dialog('close');
 
+            //Indicate that we loaded the map
             mapLoaded = true;
 
-            initiateAnimations()
+            //Animate the shapes
+            initiateAnimations();
 
-            //Unlocks everything by flagging that we have completed the load
+            //Unlock by flagging that we have completed the load
             isLoadingMap = false;
 
-            if (mapLoadErrors.length > 0) {
+            if (mapLoadErrors.length > 0) { //Concatenate and display any load errors
                 if (mapLoadErrors.length > 5) {
                     var len = mapLoadErrors.length;
                     mapLoadErrors.splice(4);
@@ -266,7 +281,7 @@ var loadMap = function () {
                 logError('Errors occurred. See below for details.\n' + mapLoadErrors.join('\n\t'));
             }
         },
-        error: function (XHR, textStatus, errorThrown) {
+        error: function (XHR, textStatus, errorThrown) { //Politely handle errors
             logError(errorStrings.shapeDefError);
         }
     })
@@ -290,6 +305,7 @@ Object.size = function (obj) { //Object size
     return size;
 };
 
+//Function to use tween.js to animate the shapes
 var initiateAnimations = function () {
     for (var i in loadedGeographies) {
         new TWEEN.Tween(loadedGeographies[i].mesh.position)
@@ -299,10 +315,10 @@ var initiateAnimations = function () {
     }
 }
 
+//Function callback to handle resizing the help dialog
 var helpResize = function () {
     $('#helpDialog').height(window.innerHeight * 0.65);
-    $('my-selector').dialog('option', 'position', 'center');
-    $("#helpAccordion").accordion("refresh");    
+    $("#helpAccordion").accordion("refresh");
 };
 
 $(document).ready(function () { //Document is ready
@@ -344,7 +360,7 @@ $(document).ready(function () { //Document is ready
     $('#loadingDialog').dialog({ title: 'Loading...', dialogClass: 'no-close', modal: true });
 
     if (window.location.hash && window.location.hash.replace('#', '').length > 0)
-        $('#mathBox').attr('value', decodeURIComponent(window.location.hash.replace('#','')));
+        $('#mathBox').attr('value', decodeURIComponent(window.location.hash.replace('#', '')));
 
     //Use Deferred to ensure properties are loaded before they are accessed
     //Associate properties with dataSets

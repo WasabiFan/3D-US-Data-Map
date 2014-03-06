@@ -96,7 +96,7 @@ $(document).ready(function () {
             selected = undefined;
             $('#dataBox-inner').fadeOut({ duration: 300 });
 
-            //A bit uglu code-wise, but it works
+            //A bit ugly code-wise, but it works
             $('#dataBox').animate({ 'marginRight': '-150px' }, {
                 easing: 'easeOutExpo', duration: 400, complete: function () {
                     document.getElementById('dataBox').removeAttribute('style');

@@ -1,4 +1,4 @@
-/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
+﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
 /// <reference path="http://code.jquery.com/ui/1.10.3/jquery-ui.js" />
 /// <reference path="Global.js" />
 /// <reference path="https://rawgithub.com/mrdoob/three.js/master/build/three.js" />
@@ -23,23 +23,28 @@ var switchGeoType = function (type) { //Function to reload the map and associate
 };
 
 var mathSubmitClicked = function () { //Callback for the refresh map data button
-    reloadMap();
+    console.time('timer');
+    reloadMap(false);
 };
 
-var reloadMap = function () {
-    $('#loadingDialog').dialog('open'); //Display the loading dialog
-    var geoType = $('#geoType').val();
-    if (geoType != currentGeoType) { //The user has selected a new map type
-        setTimeout(function () { //Give the dialog time to open before doing time-consuming operations
+var reloadMap = function (displayLoadingDialog) {
+    if(displayLoadingDialog)
+        $('#loadingDialog').dialog('open'); //Display the loading dialog
+
+    setTimeout(function () { //Give the dialog time to open before doing time-consuming operations
+
+        var geoType = $('#geoType').val();
+        if (geoType != currentGeoType) { //The user has selected a new map type
             switchGeoType(geoType);
-        }, 20);
-    }
-    else { //The user did not select a new map type
-        setTimeout(function () { //Let the dialog open
-            scene.remove(mapObject); //Remove the map object from the scene
-            mapObject = new THREE.Object3D(); loadMap(); //Reset and load the map
-        }, 20);
-    }
+        }
+        else { //The user did not select a new map type
+            loadEquationGeoData();
+            initiateAnimations();
+        }
+        console.timeEnd('timer');
+        if (displayLoadingDialog)
+            $('#loadingDialog').dialog('close');//Close the loading dialog
+    }, 20);
 }
 
 var geographyEquation;
@@ -101,17 +106,7 @@ var loadEquationFromInput = function () {
 var isLoadingMap = false;
 var mapLoadErrors = [];
 
-//Function to load the map
-var loadMap = function () {
-    if (isLoadingMap) //If the loadMap function is already running, 
-        return;
-
-    mapLoadErrors = [];
-
-    console.log('Loading map...');
-    //Sets the variable indicating that the loadMap function is running to true
-    isLoadingMap = true;
-
+var loadEquationGeoData = function () {
     //Find the min and max values in the map
     var min = Infinity, max = 0;
 
@@ -124,6 +119,41 @@ var loadMap = function () {
             max = Math.max(max, processedGeographyValue); //Evaluate max value
         }
     }
+
+    for (var id in loadedGeographies) {
+        //Get a value for the geography
+        var processedGeographyValue = processGeographyValue(loadedGeographies[id]);
+        var extrudeLength;
+        if (processedGeographyValue == -1 || processedGeographyValue == undefined) { //Make sure that the value evaluated successfully
+            extrudeLength = 0;
+            mapLoadErrors.push(errorStrings.evalError.replace('{geographyName}', loadedGeographies[id].name));
+        }
+        else //Calculate the amount to extrude based on the user's formula
+            extrudeLength = scale(processedGeographyValue, min, max, 20, 750);
+
+        //Calculate a color for the geography based on the user's formula
+        var color = new THREE.Color(0xffffff);
+        color.setHSL(0.7 - scale(processedGeographyValue, min, max, 0, 0.7), 0.5, 0.5);
+
+        //$(loadedGeographies[id].mesh.children).each(function (key, value) { value.material.color = color });
+
+        loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;
+        loadedGeographies[id].mesh.userData['calculatedColor'] = color;
+        //Set the target extrusion for the animation
+        loadedGeographies[id].targetExtrusion = extrudeLength;
+    }
+}
+
+//Function to load the map
+var loadMap = function () {
+    if (isLoadingMap) //If the loadMap function is already running, 
+        return;
+
+    mapLoadErrors = [];
+
+    console.log('Loading map...');
+    //Sets the variable indicating that the loadMap function is running to true
+    isLoadingMap = true;
 
     $.ajax({ //Get the svg
         type: "GET",
@@ -167,7 +197,7 @@ var loadMap = function () {
 
                     //Loop through the path and draw it
                     for (var i = 0; i < path.length; i++) {
-                                                
+
                         switch (path[i][0]) {
                             case 'M': //Move to
                                 shapes.push(new THREE.Shape());
@@ -190,25 +220,8 @@ var loadMap = function () {
                         }
                     }
 
-                    //Get a value for the geography
-                    var processedGeographyValue = processGeographyValue(loadedGeographies[id]);
-                    var extrude;
-                    if (processedGeographyValue == -1 || processedGeographyValue == undefined) { //Make sure that the value evaluated successfully
-                        extrude = 0;
-                        mapLoadErrors.push(errorStrings.evalError.replace('{geographyName}', loadedGeographies[id].name));
-                    }
-                    else //Calculate the amount to extrude based on the user's formula
-                        extrude = scale(processedGeographyValue, min, max, 20, 750);
-
-                    //Calculate a color for the geography based on the user's formula
-                    var color = new THREE.Color(0xffffff);
-                    color.setHSL(0.7 - scale(processedGeographyValue, min, max, 0, 0.7), 0.5, 0.5);
-
                     //Set the mesh
                     loadedGeographies[id].mesh = new THREE.Object3D();
-
-                    //Set the target extrusion for the animation
-                    loadedGeographies[id].targetExtrusion = extrude;
 
                     //Set the current extrusion to be used for the animation
                     loadedGeographies[id].currentExtrusion = 0;
@@ -217,7 +230,7 @@ var loadMap = function () {
                         if (shapes[i].actions.length > 1) {
                             try{
                                 //Create a mesh with a geometry and a material
-                                loadedGeographies[id].mesh.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shapes[i], { amount: extrude, bevelEnabled: false }), new THREE.MeshLambertMaterial({ color: color })));
+                                loadedGeographies[id].mesh.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shapes[i], { amount: 1, bevelEnabled: false }), new THREE.MeshLambertMaterial({ color: new THREE.Color(0xffffff)})));
                             }
                             catch (e) {
                                 console.log(e);
@@ -226,10 +239,8 @@ var loadMap = function () {
                     }
 
                     //Store data about the shape in the object's userData
-                    loadedGeographies[id].mesh.userData['geographyName'] = loadedGeographies[id].name;
-                    loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;                    
+                    loadedGeographies[id].mesh.userData['geographyName'] = loadedGeographies[id].name;               
                     loadedGeographies[id].mesh.userData['geoType'] = loadedGeographies[id].geotype;
-                    
 
                     //Add the geography to the map object
                     mapObject.add(loadedGeographies[id].mesh);
@@ -242,6 +253,8 @@ var loadMap = function () {
             //Set the rotation and scale of the map
             mapObject.rotation.set(degToRad(90), 0, 0);
             mapObject.scale.set(0.1, 0.1, 0.1);
+
+            loadEquationGeoData();
 
             //Add the map to the scene
             scene.add(mapObject);
@@ -292,10 +305,17 @@ Object.size = function (obj) { //Object size
 
 var initiateAnimations = function () {
     for (var i in loadedGeographies) {
-        new TWEEN.Tween(loadedGeographies[i].mesh.position)
-            .to({ z: -loadedGeographies[i].targetExtrusion }, 1500)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .start();
+
+        $(loadedGeographies[i].mesh.scale).animate({ z: loadedGeographies[i].targetExtrusion }, { duration: 1500 });
+        $(loadedGeographies[i].mesh.position).animate({ z: -loadedGeographies[i].targetExtrusion }, { duration: 1500 });
+
+        for (var j in loadedGeographies[i].mesh.children) {
+            $(loadedGeographies[i].mesh.children[j].material.color).animate({
+                r: loadedGeographies[i].mesh.userData.calculatedColor.r,
+                g: loadedGeographies[i].mesh.userData.calculatedColor.g,
+                b: loadedGeographies[i].mesh.userData.calculatedColor.b
+            }, { duration: 1500 });
+        }
     }
 }
 
@@ -361,6 +381,11 @@ $(document).ready(function () { //Document is ready
 });
 
 var loadEquationLink = function (equation) {
-    $('#mathBox').attr('value', equation);
-    reloadMap();
+    //Close the loading dialog
+    $('#helpDialog').dialog('close');
+    //setTimeout(function () { //Give the dialog a chance to close
+        $('#mathBox').attr('value', equation);
+        reloadMap(false);
+    //}, 500);
+
 }

@@ -116,8 +116,6 @@ var render = function () { //Render loop
 	//Point the camera light towards the scene
 	camLight.lookAt(new THREE.Vector3(0, 0, 0));
 
-	TWEEN.update();
-
 	//Render the scene
 	renderer.render(scene, camera);
 

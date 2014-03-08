@@ -67,7 +67,7 @@ var censusURL = function (year, dataSet, getFor, censusName) {
     return "http://api.census.gov/data/" + year + "/" + dataSet + "?key=" + APIKey + "&get=NAME" + censusName + "&for=" + getFor + ":*";
 }
 
-var geoInit = function () {// Loads the basic census data
+var censusGeoInit = function () {// Loads the basic census data
     if (currentGeoType == geoType.county) {// Check if geoType is county
         $.ajax({// Request the names of all th counties
             url: censusURL(USCB.YEAR, USCB.ACS, USCB.COUNTY),
@@ -144,9 +144,6 @@ var geoInit = function () {// Loads the basic census data
     }
 };
 
-// Initialize the basic data for all of the geographies
-geoInit();
-
 // Find and associate variables with datasets
 var uscbPropertyInit = function () {
     var deferred = $.Deferred();
@@ -195,7 +192,7 @@ var loadCensusData = function (censusName, friendlyName) {
     loadedDatasets.push(friendlyName);
 }
 
-var loadData = function (property) {// Function to load the census data for the specified property and add the result to allobjects in loadedGeographies
+var loadCensusDataProperty = function (property) {// Function to load the census data for the specified property and add the result to allobjects in loadedGeographies
 
     if (property.indexOf('}') != -1 && property.indexOf('{') != -1) {// If property is a variable linkage, get the data and apply the link
         // Get the new variable name for the parameter from property
@@ -257,6 +254,10 @@ var _loadCensusData = function (censusName, friendlyName, dataSet) {// Internal 
         }
     });
 };
+
+var validateCensusProperty = function (propertyName) {
+    return propertyName in censusVariables || propertyName in USCB.PROPS;
+}
 
 var getGEOID = function (SVGID) {// Function to get the GEOID associated with an ID
     return SVGID;

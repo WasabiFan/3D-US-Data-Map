@@ -1,4 +1,6 @@
-﻿////
+﻿/// <reference path="DataPlugins.js" />
+
+////
 // US Census Bureau Configuration
 var APIKey = '2b9ee0ef86f98ab8a8d16451067b23081acb2bfa'; // US Census API key
 

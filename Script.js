@@ -1,6 +1,7 @@
 ﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
 /// <reference path="http://code.jquery.com/ui/1.10.3/jquery-ui.js" />
 /// <reference path="Global.js" />
+/// <reference path="DataPlugins.js" />
 /// <reference path="https://rawgithub.com/mrdoob/three.js/master/build/three.js" />
 /// <reference path="http://github.com/DmitryBaranovskiy/raphael/raw/master/raphael.js" />
 /// <reference path="OrbitControls.js" />
@@ -18,7 +19,7 @@ var switchGeoType = function (type) { //Function to reload the map and associate
     mapObject = new THREE.Object3D();//Re-initialize the map object
     currentGeoType = type; //Set the loaded map type
     $('#geoType').val(type); //Set the selectbox in case it is different
-    geoInit(); //Load the required census data
+    initDataPlugins(); //Load the required census data
     loadMap(); //Load the map
 };
 
@@ -27,7 +28,7 @@ var mathSubmitClicked = function () { //Callback for the refresh map data button
 };
 
 var reloadMap = function (displayLoadingDialog) {
-    if(displayLoadingDialog)
+    if (displayLoadingDialog)
         $('#loadingDialog').dialog('open'); //Display the loading dialog
 
     setTimeout(function () { //Give the dialog time to open before doing time-consuming operations
@@ -80,7 +81,7 @@ var loadEquationFromInput = function () {
         }
 
         if (loadedDatasets.indexOf(match) == -1) //Assume it's a dataset, load it if it isn't already
-            if (loadData(match.replace('$', '')) == false) {
+            if (loadCensusDataPluginDataset(match.replace('$', '')) == false) {
                 error = true;
                 return;
             }
@@ -271,7 +272,7 @@ var loadMap = function () {
 
             //Resume rendering now that there's something to see
             resumeRender();
- 
+
             //Close the loading dialog
             $('#loadingDialog').dialog('close');
 
@@ -381,9 +382,12 @@ $(document).ready(function () { //Document is ready
     if (window.location.hash && window.location.hash.replace('#', '').length > 0)
         $('#mathBox').attr('value', decodeURIComponent(window.location.hash.replace('#', '')));
 
+    registerGlobalPlugins();
+    initDataPlugins();
+
     //Use Deferred to ensure properties are loaded before they are accessed
     //Associate properties with dataSets
-    $.when(uscbPropertyInit())
+    $.when(setupDataPlugins())
     .then(function () {
         console.log('Completed parsing properties.');
         //Set internal machinery to use the desired geography type.
@@ -401,4 +405,14 @@ var loadEquationLink = function (equation) {
 
     $('#mathBox').attr('value', equation);
     reloadMap(false);
+}
+
+//Function to load all data source plugins
+var registerGlobalPlugins = function () {
+    registerDataPlugin('US Census', {
+        setup: uscbPropertyInit,
+        init: censusGeoInit,
+        validateProperty: validateCensusProperty,
+        loadCensusDataset: loadCensusDataProperty
+    });
 }

@@ -112,6 +112,15 @@ module.exports = function (grunt) {
                     base: 'Build'
                 },
                 src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg']
+            },
+			secondary: {
+                options: {
+                    base: 'Build',
+					repo: 'https://github.com/datamap/datamap.github.io.git',
+					add:true,
+					branch: 'master'
+                },
+                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg']
             }
         }
 

@@ -126,11 +126,11 @@ var render = function () { //Render loop
 	framesInLastSecond++;
 };
 
-var pauseRender = function () {
+var pauseRender = function () { //Function to pause the render loop to save CPU
     shouldRender = false;
 }
 
-var resumeRender = function () {
+var resumeRender = function () { //Function to resume render
     shouldRender = true;
 
     //Register for the next frame

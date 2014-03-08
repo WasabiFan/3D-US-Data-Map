@@ -68,8 +68,15 @@ $(document).ready(function () {
 
             if (selected == undefined) {//Show the properties window  
                 //$('#dataBox').fadeIn({ duration: 50, queue: false });
-                $('#dataBox').addClass('dataBox-extended', {easing: 'easeOutExpo', duration: 550 /*duration: 400, easing: 'swing', queue: false*/ });
-                $('#dataBox-inner').fadeIn({ duration: 60});
+                //$('#dataBox').addClass('dataBox-extended', { easing: 'easeOutExpo', duration: 550, queue: false/*duration: 400, easing: 'swing', queue: false*/ });
+                $('#dataBox').animate({
+                    height: 140,
+                    borderBottomWidth: 0,
+                    borderTopWidth: 0,
+                    borderRightWidth: 150
+                }, { easing: 'easeOutExpo', duration: 550, queue: false/*duration: 400, easing: 'swing', queue: false*/ });
+
+                $('#dataBox-inner').fadeIn({ duration: 550, queue: false });
                 //$('#dataBox').animate({ 'bottom': '10px' }, { duration: 100, easing: 'swing', queue:false} );
             }
 
@@ -87,10 +94,16 @@ $(document).ready(function () {
         else {
             //The mouse is not over any geography, reset
             selected = undefined;
-            $('#dataBox-inner').fadeOut({ duration: 60});
-            
-            //This animation does not work. It is not interpreting the reverse class transition correctly.
-            $('#dataBox').removeClass('dataBox-extended', { easing: 'easeOutExpo', duration: 400 /*duration: 400, easing: 'swing', queue: false*/ });
+            $('#dataBox-inner').fadeOut({ duration: 300 });
+
+            //A bit ugly code-wise, but it works
+            $('#dataBox').animate({ 'marginRight': '-150px' }, {
+                easing: 'easeOutExpo', duration: 400, complete: function () {
+                    document.getElementById('dataBox').removeAttribute('style');
+                }
+            });
+
+
         }
     });
 });

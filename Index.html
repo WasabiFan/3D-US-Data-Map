@@ -4,10 +4,10 @@
     <!--Title-->
     <title>3D Map of the US</title>
 
-   
+
     <!-- Basic JQueryUI CSS-->
     <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-    
+
     <!--Main JQuery-->
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <!--Secondary JQuery File: Necessary for getting input value-->
@@ -63,6 +63,8 @@
             <!-- Box for user value expressions-->
             <input id="mathBox" value="totalPopulation" placeholder="Equation" />
         </div>
+
+        <!--Container for 2nd control row-->
         <div id="controlGroup2">
 
 
@@ -81,9 +83,11 @@
                 <a id="mathSubmit" onclick="mathSubmitClicked();"></a>
             </div>
 
+            <!--Box to warn user about fallback to canvas-->
             <div id="WebGLWarningBox">
-            <div id="svgWarningIcon"></div>
-                Your browser doesn't support WebGL. <a href="http://get.webgl.org/">Learn more</a></div>
+                <div id="svgWarningIcon"></div>
+                Your browser doesn't support WebGL. <a href="http://get.webgl.org/">Learn more</a>
+            </div>
             <span id="tabCap">
                 <i id="tabCap-inner"></i>
             </span>

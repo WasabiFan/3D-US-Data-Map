@@ -81,7 +81,7 @@ var loadEquationFromInput = function () {
         }
 
         if (loadedDatasets.indexOf(match) == -1) //Assume it's a dataset, load it if it isn't already
-            if (loadCensusDataPluginDataset(match.replace('$', '')) == false) {
+            if (loadDataPluginDataset(match.replace('$', '')) == false) {
                 error = true;
                 return;
             }
@@ -413,6 +413,6 @@ var registerGlobalPlugins = function () {
         setup: uscbPropertyInit,
         init: censusGeoInit,
         validateProperty: validateCensusProperty,
-        loadCensusDataset: loadCensusDataProperty
+        loadDataset: loadCensusDataProperty
     });
 }

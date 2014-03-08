@@ -2,8 +2,13 @@
 var loadedDataPlugins = {};
 
 //Registers a data plugin
+/*Options:
+    setup: one-time function or functions to be called when the page loads
+    init: function or functions to be called when geographies are loaded
+    validateProperty: function to take a property name and determine if the plugin has data for it (returns true or false)
+    loadDataset: function to load a property in to all geographies
+*/
 var registerDataPlugin = function (pluginName, options) {
-    //setup, init, loadCensusDataset, validateProperty
 
     loadedDataPlugins[pluginName] = options;
 }
@@ -57,9 +62,9 @@ var initDataPlugins = function () {
 }
 
 //Function to load a dataset from a name
-var loadCensusDataPluginDataset = function (datasetName) {
+var loadDataPluginDataset = function (datasetName) {
     for (var i in loadedDataPlugins) {
         if (loadedDataPlugins[i].validateProperty(datasetName))
-            return loadedDataPlugins[i].loadCensusDataset(datasetName);
+            return loadedDataPlugins[i].loadDataset(datasetName);
     }
 }

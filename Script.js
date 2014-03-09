@@ -112,24 +112,30 @@ var mapLoadErrors = [];
 
 var loadEquationGeoData = function () {
     //Find the min and max values in the map
-    var min = Infinity, max = 0;
+    var min = Infinity, max = 0, numberValidGeographies = 0;
 
     loadEquationFromInput();
 
     for (var i in loadedGeographies) { //Loop through all of the loaded geographies, even if they are just data
         var processedGeographyValue = processGeographyValue(loadedGeographies[i]); //Get the value of the geography based on  the user's formula
-        if (processedGeographyValue != -1) { //The formula evaluated successfully
+        if (processedGeographyValue != -1 && !isNaN(processedGeographyValue)) { //The formula evaluated successfully
             min = Math.min(min, processedGeographyValue); //Evaluate min value
             max = Math.max(max, processedGeographyValue); //Evaluate max value
+            numberValidGeographies++;
         }
     }
 
     for (var id in loadedGeographies) {
+        var isValid = true;
+
         //Get a value for the geography
         var processedGeographyValue = processGeographyValue(loadedGeographies[id]);
+
         var extrudeLength;
-        if (processedGeographyValue == -1 || processedGeographyValue == undefined) { //Make sure that the value evaluated successfully
+        if (processedGeographyValue == -1 || processedGeographyValue == undefined || isNaN(processedGeographyValue) || numberValidGeographies <= 0) { //Make sure that the value evaluated successfully
             extrudeLength = 0;
+            processedGeographyValue = scale(0.5, 0, 1, min, max);
+            isValid = false;
             mapLoadErrors.push(errorStrings.evalError.replace('{geographyName}', loadedGeographies[id].name));
         }
         else //Calculate the amount to extrude based on the user's formula
@@ -143,6 +149,7 @@ var loadEquationGeoData = function () {
 
         loadedGeographies[id].mesh.userData['value'] = processedGeographyValue;
         loadedGeographies[id].mesh.userData['calculatedColor'] = color;
+        loadedGeographies[id].mesh.userData['isValid'] = isValid;
         //Set the target extrusion for the animation
         loadedGeographies[id].targetExtrusion = extrudeLength;
     }
@@ -321,17 +328,24 @@ Object.size = function (obj) { //Object size
 //Function to animate the shapes
 var initiateAnimations = function () {
     for (var i in loadedGeographies) {
+        var extrusion = loadedGeographies[i].targetExtrusion;
+        var r = loadedGeographies[i].mesh.userData.calculatedColor.r,
+            g = loadedGeographies[i].mesh.userData.calculatedColor.g,
+            b = loadedGeographies[i].mesh.userData.calculatedColor.b
 
-        $(loadedGeographies[i].mesh.scale).animate({ z: loadedGeographies[i].targetExtrusion }, { duration: 1500 });
-        $(loadedGeographies[i].mesh.position).animate({ z: -loadedGeographies[i].targetExtrusion }, { duration: 1500 });
-
-        for (var j in loadedGeographies[i].mesh.children) {
-            $(loadedGeographies[i].mesh.children[j].material.color).animate({
-                r: loadedGeographies[i].mesh.userData.calculatedColor.r,
-                g: loadedGeographies[i].mesh.userData.calculatedColor.g,
-                b: loadedGeographies[i].mesh.userData.calculatedColor.b
-            }, { duration: 1500 });
+        if (!loadedGeographies[i].mesh.userData.isValid) {
+            extrusion = 1;
         }
+            $(loadedGeographies[i].mesh.scale).animate({ z: extrusion }, { duration: 1500 });
+            $(loadedGeographies[i].mesh.position).animate({ z: -extrusion }, { duration: 1500 });
+
+            for (var j in loadedGeographies[i].mesh.children) {
+                $(loadedGeographies[i].mesh.children[j].material.color).animate({
+                    r: r,
+                    g: g,
+                    b: b
+                }, { duration: 1500 });
+            }
     }
 }
 
@@ -414,5 +428,12 @@ var registerGlobalPlugins = function () {
         init: censusGeoInit,
         validateProperty: validateCensusProperty,
         loadDataset: loadCensusDataProperty
+    });
+
+    registerDataPlugin('UCR Crime Database', {
+        setup: setupCrimePlugin,
+        init: initCrimePlugin,
+        validateProperty: validateCrimePluginProperty,
+        loadDataset: loadCrimeDataset
     });
 }

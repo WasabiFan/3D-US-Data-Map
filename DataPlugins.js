@@ -67,4 +67,6 @@ var loadDataPluginDataset = function (datasetName) {
         if (loadedDataPlugins[i].validateProperty(datasetName))
             return loadedDataPlugins[i].loadDataset(datasetName);
     }
+    logError('Unable to find candidate plugin for property ' + datasetName);
+    return false;
 }

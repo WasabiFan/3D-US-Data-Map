@@ -25,9 +25,11 @@ module.exports = function (grunt) {
                         [
                             'OrbitControls.js',
                             'raphael.js',
-                            'Data.js',
                             'Global.js',
+							'DataPlugins.js',
+							'Data.js',
                             'Census.js',
+							'CrimeUCR.js',
                             '3DScene.js',
                             'Selection.js',
                             'Script.js'
@@ -120,7 +122,7 @@ module.exports = function (grunt) {
 					add:true,
 					branch: 'master'
                 },
-                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg']
+                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg', 'Data/UCR2012.csv']
             }
         }
 

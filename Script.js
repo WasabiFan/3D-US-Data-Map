@@ -239,10 +239,13 @@ var loadMap = function () {
                         }
                     }
 					
+					//Removes duplicates from shapes array
 					for(var i = 0; i < shapes.length; i++){
 						for(var j = 0; j < shapes[i].actions.length; j++){
 							if(j > 0){
+								//Check if the point on the action is the same as the last point
 								if(Math.sqrt(Math.pow(shapes[i].actions[j].args[0] - shapes[i].actions[j - 1].args[0],2)+Math.pow(shapes[i].actions[j].args[1] - shapes[i].actions[j - 1].args[1],2))==0){
+									//remove the action from the shape
 									var rest = shapes[i].actions.slice(j + 1 || shapes[i].actions.length);
 									shapes[i].actions.length = j < 0 ? shapes[i].actions.length + j : j;
 									shapes[i].actions.push.apply(shapes[i].actions, rest);

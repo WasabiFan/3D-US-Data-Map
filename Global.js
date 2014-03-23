@@ -59,7 +59,7 @@ function getQuerystring(key) { //Function to parse the URL and obtain a query st
 //Global error log function
 var logError = function (errorMessage, promptUser) {
     console.error(errorMessage);
-    if (promptUser || true)
+    if (promptUser == undefined || promptUser == true)
         alert(errorMessage);
 }
 

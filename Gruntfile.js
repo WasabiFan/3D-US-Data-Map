@@ -16,7 +16,8 @@ module.exports = function (grunt) {
                 ' * ' + '<%= pkg.name %>\n' +
                 ' * ' + 'v<%= pkg.version %>\n' +
                 ' * ' + '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-                ' **/\n'
+                ' **/\n',
+                beautify: true
             },
 
             main: {
@@ -60,7 +61,7 @@ module.exports = function (grunt) {
                         scripts = scripts.replace('{DATAVARS}', grunt.file.read('Build/Variables.min.js'));
 
                         var escapedCountyData = grunt.file.read('Data/CountyData.txt').replace(/\n/g, '\\n');
-                        var escapedStateData = grunt.file.read('Data/StateData.csv').replace(/\n/g, '\\n');
+                        var escapedStateData = grunt.file.read('Data/StateData.csv').replace(/\r\n/g, '\\n');
 
                         scripts = scripts.replace('{CSVDATA}', 'var preloadedCountyData = "' + escapedCountyData + '"; var preloadedStateData = "' + escapedStateData + '";');
 

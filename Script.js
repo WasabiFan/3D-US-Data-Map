@@ -19,8 +19,9 @@ var switchGeoType = function (type) { //Function to reload the map and associate
     mapObject = new THREE.Object3D();//Re-initialize the map object
     currentGeoType = type; //Set the loaded map type
     $('#geoType').val(type); //Set the selectbox in case it is different
-    initDataPlugins(); //Load the required census data
-    loadMap(); //Load the map
+    initDataPlugins().then(function () {//Load the required census data
+        loadMap(); //Load the map
+    });
 };
 
 var mathSubmitClicked = function () { //Callback for the refresh map data button
@@ -397,20 +398,20 @@ $(document).ready(function () { //Document is ready
         $('#mathBox').attr('value', decodeURIComponent(window.location.hash.replace('#', '')));
 
     registerGlobalPlugins();
-    initDataPlugins();
 
     //Use Deferred to ensure properties are loaded before they are accessed
     //Associate properties with dataSets
     $.when(setupDataPlugins())
-    .then(function () {
-        console.log('Completed parsing properties.');
-        //Set internal machinery to use the desired geography type.
-        switchGeoType(geoType);
+        .then(function () {
+            $.when(initDataPlugins()).then(function () {
+                console.log('Completed parsing properties.');
+                //Set internal machinery to use the desired geography type.
+                switchGeoType(geoType);
 
-        //Load the scene
-        loadScene();
-    });
-
+                //Load the scene
+                loadScene();
+            })
+        });
 });
 
 var loadEquationLink = function (equation) {

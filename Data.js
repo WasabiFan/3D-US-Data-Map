@@ -17,7 +17,7 @@
 
 var loadCountyData = function (callback, error) {
     if (typeof preloadedCountyData != 'undefined')
-        callback(preloadedCountyeData);
+        callback(preloadedCountyData);
     else {
         return $.ajax({
             url: "Data/CountyData.txt",

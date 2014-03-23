@@ -238,6 +238,19 @@ var loadMap = function () {
                                 break;
                         }
                     }
+					
+					for(var i = 0; i < shapes.length; i++){
+						for(var j = 0; j < shapes[i].actions.length; j++){
+							if(j > 0){
+								if(Math.sqrt(Math.pow(shapes[i].actions[j].args[0] - shapes[i].actions[j - 1].args[0],2)+Math.pow(shapes[i].actions[j].args[1] - shapes[i].actions[j - 1].args[1],2))==0){
+									var rest = shapes[i].actions.slice(j + 1 || shapes[i].actions.length);
+									shapes[i].actions.length = j < 0 ? shapes[i].actions.length + j : j;
+									shapes[i].actions.push.apply(shapes[i].actions, rest);
+									j--;
+								}
+							}
+						}
+					}
 
                     //Set the mesh
                     loadedGeographies[id].mesh = new THREE.Object3D();

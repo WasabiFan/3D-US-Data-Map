@@ -59,12 +59,13 @@ var loadScene = function () { //Function to load the basic scene
 
 	//Set the size of the renderer and register for the resize event
 	var resize = function () {
+		$container.height(window.innerHeight);
 		WIDTH = $container.width();
 		HEIGHT = $container.height();
 
 		renderer.setSize(WIDTH, HEIGHT);
 
-		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.aspect = WIDTH / HEIGHT;
 		camera.updateProjectionMatrix();
 	}
 

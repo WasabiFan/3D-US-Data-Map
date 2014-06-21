@@ -5,6 +5,8 @@ var fileLinks =
 <script type="text/javascript">{SCRIPTS}</script>\
 <style>{STYLES}</style>'
 
+var filesToPublish = ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg', 'Data/UCR2012.csv', 'theme/*', 'theme/images/*'];
+
 module.exports = function (grunt) {
 
     grunt.initConfig({
@@ -80,6 +82,10 @@ module.exports = function (grunt) {
                 src: 'Data/*',
                 dest: 'Build/',
             },
+			theme: {
+                src: ['theme/*', 'theme/images/*'],
+                dest: 'Build/',
+            },
         },
 
         cssmin: {
@@ -114,7 +120,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'Build'
                 },
-                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg']
+                src: filesToPublish
             },
 			secondary: {
                 options: {
@@ -123,7 +129,7 @@ module.exports = function (grunt) {
 					add:true,
 					branch: 'master'
                 },
-                src: ['Index.html', 'Data/USStates.svg', 'Data/USCounties.svg', 'Data/UCR2012.csv']
+                src: filesToPublish
             }
         }
 

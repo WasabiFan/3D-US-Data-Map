@@ -84,7 +84,7 @@ $(document).ready(function () {
             selected = hovered[0]; //Shift the selected shapes to their new variables
 
             $('#selectedName').html(selected.userData['geographyName']); //Set the text in the box
-            $('#selectedInfo').html(selected.userData['value']);
+            $('#selectedInfo').html(selected.userData['value'].toLocaleString());
 
 
             if (selected != undefined) { //Color the newly selected shape

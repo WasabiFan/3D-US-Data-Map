@@ -376,8 +376,7 @@ $(document).ready(function () { //Document is ready
     //Get the desired geography type from URL or fallback to the selectbox
     var geoType = getQuerystring('geoType') || $('#geoType').val();
 
-    //Set the height of the container to the full window height
-    $('#container').height(window.innerHeight - 10);
+    handleResize();
 
     //Create the help dialog
     $('#helpDialog').dialog({
@@ -426,6 +425,8 @@ $(document).ready(function () { //Document is ready
 
                 //Load the scene
                 loadScene();
+
+                handleResize();
             })
         });
 });

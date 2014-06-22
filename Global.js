@@ -37,6 +37,21 @@ var loadedDatasets = []; //Variable to store what datasets have been loaded from
 
 var mapLoaded = false;
 
+var handleResize = function () { //Function to re-calculate the frame size and reset the projection vectors
+    if ($container != undefined) {
+        //$container.height(window.innerHeight);
+        //$container.width(window.innerWidth);
+
+        WIDTH = $container.width();
+        HEIGHT = $container.height();
+
+        renderer.setSize(WIDTH, HEIGHT);
+
+        camera.aspect = WIDTH / HEIGHT;
+        camera.updateProjectionMatrix();
+    }
+}
+
 var mapOffset = new THREE.Vector2(0, -500); //Vector to offset all of the points in the map (0,0 in the svg is in the upper left corner)
 
 var geoType = { county: 'county', state: 'state' }; //Quick access to the different settings; not actually functionally useful 

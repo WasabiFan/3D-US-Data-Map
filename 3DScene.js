@@ -37,10 +37,10 @@ var loadScene = function () { //Function to load the basic scene
     // Create a renderer and camera
 
 	if (Detector.webgl)
-	    renderer = new THREE.WebGLRenderer();
+	    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("displayCanvas") });
 	else {
 	    $('#WebGLWarningBox').css('display', 'block');
-	    renderer = new THREE.CanvasRenderer();
+	    renderer = new THREE.CanvasRenderer({ canvas: document.getElementById("displayCanvas") });
 	}
 
 	camera = new THREE.PerspectiveCamera(VIEW_ANGLE,
@@ -57,24 +57,12 @@ var loadScene = function () { //Function to load the basic scene
 	//Add the camera to the scene
 	scene.add(camera);
 
-	//Set the size of the renderer and register for the resize event
-	var resize = function () {
-		$container.height(window.innerHeight);
-		WIDTH = $container.width();
-		HEIGHT = $container.height();
-
-		renderer.setSize(WIDTH, HEIGHT);
-
-		camera.aspect = WIDTH / HEIGHT;
-		camera.updateProjectionMatrix();
-	}
-
     //Resizes the container when you resize the window
-	$(window).resize(resize);
-	resize();
-
+	$(window).resize(handleResize);
+	handleResize();
+    
 	//Add the renderer dom element to the page
-	$container.append(renderer.domElement);
+	//$container.append(renderer.domElement);
 
 	//Create a white light and point it at the map
 	light = new THREE.DirectionalLight(0xffffff);

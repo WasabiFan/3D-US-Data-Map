@@ -6,8 +6,8 @@
     else {
         console.log('Loading state data');
         return $.ajax({
-            url: 'Data/StateData.csv',
-            dataType: 'text',
+            url: 'Data/StateGeoData.json',
+            dataType: 'json',
             async: false,
             success: callback,
             error: error

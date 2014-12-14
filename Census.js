@@ -68,78 +68,53 @@ var censusURL = function (year, dataSet, getFor, censusName) {
 }
 
 var censusGeoInit = function () {// Loads the basic census data
-    if (currentGeoType == geoType.county) {// Check if geoType is county
-        $.ajax({// Request the names of all th counties
-            url: censusURL(USCB.YEAR, USCB.ACS, USCB.COUNTY),
-            dataType: 'json',
-            async: false,
-            success: function (data) {// Load the response data into loadedGeographies
-
-                var i = 0;
-                // Iterate through each object in the census API response
-                $.each(data, function (key, val) {// Loop through all of the returned data
-                    if (i == 0) {// Ignore the first object in the file
-                        i++;
-                        return;
-                    }
-
-                    // Add a new object to loadedGeographies with the name of the current county
-                    loadedGeographies[val[1] + val[2]] = { name: val[0], geotype:'county' };
-                });
-            },
-            error: function (XHR, textStatus, errorThrown) {
-                logError(errorStrings.censusError);
-            }
-        });
-        loadCountyData(function (data) {
-                var countyData = d3.tsv.parse(data);
-                for (var i in countyData) {// Iterate through each row in countyData
-                    //Set the water area property of the county to the water area from countyData
-                    loadedGeographies[countyData[i]['GEOID']]['waterArea'] = countyData[i]['AWATER'];
-                    //Set the land area property of the county to the land area obtained in countyData
-                    loadedGeographies[countyData[i]['GEOID']]['landArea'] = countyData[i]['ALAND'];
-                    loadedGeographies[countyData[i]['GEOID']]['totalArea'] = parseInt(countyData[i]['ALAND']) + parseInt(countyData[i]['AWATER']);
+    $.ajax({// Request the names of all th counties
+        url: censusURL(USCB.YEAR, USCB.ACS, currentGeoType == geoType.county ? USCB.COUNTY : USCB.STATE),
+        dataType: 'json',
+        async: false,
+        success: function (data) {// Load the response data into loadedGeographies
+            // Iterate through each object in the census API response (strip header)
+            $.each(data.slice(1), function (key, val) {
+                if (currentGeoType == geoType.county)// Add a new object to loadedGeographies with the name of the current item
+                    loadedGeographies[val[1] + val[2]] = { name: val[0], geotype: 'county' };
+                else {
+                    loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
+                    stateIDTable[val[0]] = val[1];
                 }
-                //Note that we have loaded land and water area
-                loadedDatasets.push('waterArea', 'landArea', 'totalArea');
-            },
+            });
+        },
+        error: function (XHR, textStatus, errorThrown) {
+            logError(errorStrings.censusError);
+        }
+    });
+
+    if (currentGeoType == geoType.county) {// Check if geoType is county
+        loadCountyData(function (data) {
+            var countyData = d3.tsv.parse(data);
+            for (var i in countyData) {// Iterate through each row in countyData
+                //Set the water area property of the county to the water area from countyData
+                loadedGeographies[countyData[i]['GEOID']]['waterArea'] = countyData[i]['AWATER'];
+                //Set the land area property of the county to the land area obtained in countyData
+                loadedGeographies[countyData[i]['GEOID']]['landArea'] = countyData[i]['ALAND'];
+                loadedGeographies[countyData[i]['GEOID']]['totalArea'] = parseInt(countyData[i]['ALAND']) + parseInt(countyData[i]['AWATER']);
+            }
+            //Note that we have loaded land and water area
+            loadedDatasets.push('landArea', 'waterArea', 'totalArea');
+        },
             function (XHR, textStatus, errorThrown) {
                 logError(errorStrings.areaLoadingError);
             }
         );
     }
     else {// If the geoType is state, load the basic state info
-        $.ajax({// Get the names of all the states
-            url: censusURL(USCB.YEAR, USCB.ACS, USCB.STATE),
-            dataType: 'json',
-            async: false,
-            success: function (data) {// When the ajax finishes, load the response data into loadedGeographies
-                var i = 0;
-                $.each(data, function (key, val) {//Iterate through all of the returned data
-                    if (i == 0) {// Ignore the first line
-                        i++;
-                        return;
-                    }
-                    // Add the new object to the array
-                    loadedGeographies[val[1]] = { name: val[0], geotype: 'state' };
-                    stateIDTable[val[0]] = val[1];
-                });
-                loadStateData(function(data){
-                        $.each(d3.csv.parse(data), function (key, val) {
-                            loadedGeographies[stateIDTable[val.State]]['landArea'] = val['Land Area'];
-                            loadedGeographies[stateIDTable[val.State]]['waterArea'] = val['Water Area'];
-                            loadedGeographies[stateIDTable[val.State]]['totalArea'] = val['Total Area'];
-                        });
-                        loadedDatasets.push('landArea', 'waterArea', 'totalArea');
-                    },
-                    function (XHR, textStatus, errorThrown) {
-                        logError(errorStrings.areaLoadingError);
-                    }
-                );
-            },
-            error: function (XHR, textStatus, errorThrown) {
-                logError(errorStrings.censusError);
-            }
+        loadStateData(function (data) {
+            $.each(data, function (key, val) {
+                $.extend(loadedGeographies[stateIDTable[key]], val);
+            });
+            loadedDatasets.push('landArea', 'waterArea', 'totalArea');
+        },
+        function (XHR, textStatus, errorThrown) {
+            logError(errorStrings.areaLoadingError);
         });
     }
 };

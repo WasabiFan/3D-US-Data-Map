@@ -33,6 +33,8 @@ var loadedGeographies = {};
 var mapObject = new THREE.Object3D(); //Object to encompass all of the geographies
 var censusQueryCompleted = false;
 
+var preloadedStateData;
+
 var loadedDatasets = []; //Variable to store what datasets have been loaded from the census api for easy access
 
 var mapLoaded = false;

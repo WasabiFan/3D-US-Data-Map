@@ -40,5 +40,3 @@ var loadInitProperties = function (data, callback) {
     else
         return $.getJSON(data, callback);
 }
-
-var preloadedStateData = "";

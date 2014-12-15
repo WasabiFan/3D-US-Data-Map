@@ -19,7 +19,7 @@ setInterval(function () {//Update the fps counter each second
 var loadScene = function () { //Function to load the basic scene
 	
 	//Load the map
-	loadMap();
+	//loadMap();
 
 	//Get the container
 	$container = $('#container');

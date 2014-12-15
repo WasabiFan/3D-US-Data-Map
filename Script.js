@@ -18,6 +18,12 @@ var switchGeoType = function (type) { //Function to reload the map and associate
 
     mapObject = new THREE.Object3D();//Re-initialize the map object
     currentGeoType = type; //Set the loaded map type
+
+    if (currentGeoType == geoType.county)
+        $('#slowWarningBox').css('display', 'block');
+    else
+        $('#slowWarningBox').css('display', 'none');
+
     $('#geoType').val(type); //Set the selectbox in case it is different
     initDataPlugins().then(function () {//Load the required census data
         loadMap(); //Load the map
@@ -25,7 +31,12 @@ var switchGeoType = function (type) { //Function to reload the map and associate
 };
 
 var mathSubmitClicked = function () { //Callback for the refresh map data button
-    reloadMap(false);
+    var geoType = $('#geoType').val();
+    if (geoType == currentGeoType) // If the geoType has changed, show the loading dialog
+        reloadMap(false);
+    else
+        reloadMap(true);
+
 };
 
 var reloadMap = function (displayLoadingDialog) {
@@ -127,6 +138,9 @@ var loadEquationGeoData = function () {
     }
 
     for (var id in loadedGeographies) {
+        if (loadedGeographies[id].mesh == undefined)
+            continue;
+
         var isValid = true;
 
         //Get a value for the geography
@@ -174,7 +188,8 @@ var loadMap = function () {
         type: "GET",
         url: svgIndex[currentGeoType],
         dataType: "xml",
-        async: true,
+        accepts: "image/svg+xml",
+        async: false,
         success: function (xml) {
 
             //Get the svg element in the xml
@@ -345,6 +360,10 @@ Object.size = function (obj) { //Object size
 //Function to animate the shapes
 var initiateAnimations = function () {
     for (var i in loadedGeographies) {
+        //Workaround for mesh load error
+        if (loadedGeographies[i].mesh == undefined)
+            continue;
+
         var extrusion = loadedGeographies[i].targetExtrusion;
         var r = loadedGeographies[i].mesh.userData.calculatedColor.r,
             g = loadedGeographies[i].mesh.userData.calculatedColor.g,
@@ -353,16 +372,16 @@ var initiateAnimations = function () {
         if (!loadedGeographies[i].mesh.userData.isValid) {
             extrusion = 1;
         }
-            $(loadedGeographies[i].mesh.scale).animate({ z: extrusion }, { duration: 1500 });
-            $(loadedGeographies[i].mesh.position).animate({ z: -extrusion }, { duration: 1500 });
+        $(loadedGeographies[i].mesh.scale).animate({ z: extrusion }, { duration: 1500 });
+        $(loadedGeographies[i].mesh.position).animate({ z: -extrusion }, { duration: 1500 });
 
-            for (var j in loadedGeographies[i].mesh.children) {
-                $(loadedGeographies[i].mesh.children[j].material.color).animate({
-                    r: r,
-                    g: g,
-                    b: b
-                }, { duration: 1500 });
-            }
+        for (var j in loadedGeographies[i].mesh.children) {
+            $(loadedGeographies[i].mesh.children[j].material.color).animate({
+                r: r,
+                g: g,
+                b: b
+            }, { duration: 1500 });
+        }
     }
 }
 
@@ -420,11 +439,11 @@ $(document).ready(function () { //Document is ready
         .then(function () {
             $.when(initDataPlugins()).then(function () {
                 console.log('Completed parsing properties.');
-                //Set internal machinery to use the desired geography type.
-                switchGeoType(geoType);
-
                 //Load the scene
                 loadScene();
+
+                //Set internal machinery to use the desired geography type.
+                switchGeoType(geoType);
 
                 handleResize();
             })

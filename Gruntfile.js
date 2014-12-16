@@ -6,15 +6,7 @@ module.exports = function (grunt) {
 
         copy: {
             main: {
-                src: '*.*',
-                dest: 'Build/',
-            },
-            data: {
-                src: 'Data/*',
-                dest: 'Build/Data/',
-            },
-			theme: {
-                src: ['theme/*', 'theme/images/*'],
+                src: '**',
                 dest: 'Build/',
             }
         },
@@ -24,7 +16,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'Build'
                 },
-                src: '**/*.*'
+                src: '**'
             },
 			secondary: {
                 options: {
@@ -33,7 +25,7 @@ module.exports = function (grunt) {
 					add:true,
 					branch: 'master'
                 },
-                src: '**/*.*'
+                src: '**'
             }
         }
 

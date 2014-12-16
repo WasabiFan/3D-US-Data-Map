@@ -77,7 +77,7 @@ var loadScene = function () { //Function to load the basic scene
 	scene.add(camLight);
 
 	//Setup the orbit controls and give it the camera
-	controls = new THREE.OrbitAndPanControls(camera, document.getElementById('container'));
+	controls = new THREE.OrbitControls(camera, document.getElementById('container'));
 
 	//var cube = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), new THREE.MeshNormalMaterial());
 	//scene.add(cube);
@@ -96,11 +96,8 @@ var render = function () { //Render loop
 	//Update the orbit
 	controls.update();
 
-	//Point the camera towards the map
-	camera.lookAt(new THREE.Vector3(0, 0, 0));
-
 	//Move the camera light to the position of the 
-	camLight.position = camera.position;
+	camLight.position.copy(camera.position);
 
 	//Point the camera light towards the scene
 	camLight.lookAt(new THREE.Vector3(0, 0, 0));

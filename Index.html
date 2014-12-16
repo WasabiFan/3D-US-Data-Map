@@ -540,6 +540,9 @@
                         <th>Description</th>
                     </tr>
                     <tr>
+                        <th colspan="2" class="tableHeader-emphasized">Demographics</th>
+                    </tr>
+                    <tr>
                         <td><div class="code equationLink">totalPopulation</div></td>
                         <td>Most basic equation. Just the total population.</td>
                     </tr>
@@ -570,6 +573,21 @@
                     <tr>
                         <td><div class="code equationLink">onePersonHouseholds / totalPopulation</div></td>
                         <td>A relative value indicating the ratio of people living in a house alone.</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="tableHeader-emphasized">Crime (only available for states)</th>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">violentCrimeTotal</div></td>
+                        <td>The number of violent crime cases in one year.</td>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">(murder / violentCrimeTotal) * 100</div></td>
+                        <td>The percentage of violent crime cases that included murder.</td>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">(robbery / violentCrimeTotal) * 100</div></td>
+                        <td>The percentage of violent crime cases that included robbery.</td>
                     </tr>
                 </table>
             </div>

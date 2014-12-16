@@ -39,7 +39,7 @@ var loadScene = function () { //Function to load the basic scene
 	if (Detector.webgl)
 	    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("displayCanvas") });
 	else {
-	    $('#WebGLWarningBox').css('display', 'block');
+	    showWarningBox('Your browser doesn\'t support WebGL. <a href="http://get.webgl.org/">Learn more</a>');
 	    renderer = new THREE.CanvasRenderer({ canvas: document.getElementById("displayCanvas") });
 	}
 

@@ -159,3 +159,41 @@ var math_function = function (function_name) {
     else
         return module[function_name]
 }
+
+var warningStack = [];
+var showWarningBox = function (message, type) {
+    warningStack.push({ message: message, type: type });
+
+    $('#warningBox #warningBoxContent').html(message);
+
+    if (type == undefined || type == 'warning') {
+        $('#warningBox .svgWarningIcon').css('display', 'block');
+        $('#warningBox .svgInfoIcon').css('display', 'none');
+    }
+    else {
+        $('#warningBox .svgWarningIcon').css('display', 'none');
+        $('#warningBox .svgInfoIcon').css('display', 'block');
+    }
+
+    $('#warningBox').css('display', 'block');
+}
+
+var hideWarningBox = function (animate) {
+    warningStack.pop();
+
+    function hideAndReset() {
+        $('#warningBox').css({ 'width': '' });
+        $('#warningBox').css('display', 'none');
+    }
+
+    if (warningStack.length > 0) {
+        var warningInfo = warningStack.pop();
+        showWarningBox(warningInfo.message, warningInfo.type);
+    }
+    else {
+        if (animate)
+            $('#warningBox').animate({ width: 0 }, { complete: hideAndReset, easing: 'easeInOutExpo', duration: 700 });
+        else
+            hideAndReset();
+    }
+}

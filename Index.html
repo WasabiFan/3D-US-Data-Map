@@ -101,8 +101,8 @@
                 </a>
             </div>
 
-            <!--Box to warn user about fallback to canvas-->
-            <div id="WebGLWarningBox" class="warningBox">
+            <!--Box to warn user about errors and present the user with messages-->
+            <div id="warningBox" class="warningBox">
                 <div class="svgWarningIcon">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="100%" viewBox="20.473 22.167 35.055 32.854" enable-background="new 20.473 22.167 35.055 32.854">
                         <path fill="#F4B300" d="M38,22.167c3.166,0,19,30.083,17.416,31.667c-1.582,1.582-33.25,1.582-34.833,0
@@ -110,17 +110,14 @@
 	                        s2.375-1.063,2.375-2.375C40.375,46.98,39.312,45.916,38,45.916z M35.625,31.667l0.792,12.667h3.167l0.791-12.667H35.625z" />
                     </svg>
                 </div>
-                Your browser doesn't support WebGL. <a href="http://get.webgl.org/">Learn more</a>
-            </div>
-            <div id="slowWarningBox" class="warningBox">
-                <div class="svgWarningIcon">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="100%" viewBox="20.473 22.167 35.055 32.854" enable-background="new 20.473 22.167 35.055 32.854">
-                        <path fill="#F4B300" d="M38,22.167c3.166,0,19,30.083,17.416,31.667c-1.582,1.582-33.25,1.582-34.833,0
-	                    C19,52.25,34.833,22.167,38,22.167z M38,45.916c-1.312,0-2.375,1.064-2.375,2.375c0,1.313,1.063,2.375,2.375,2.375
-	                    s2.375-1.063,2.375-2.375C40.375,46.98,39.312,45.916,38,45.916z M35.625,31.667l0.792,12.667h3.167l0.791-12.667H35.625z" />
+
+                <div class="svgInfoIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" height="100%" viewBox="1.466 1.466 29.068 29.068" enable-background="new 1.466 1.466 29.068 29.068">
+                        <path fill="#0062A5" d="M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.026,6.507,14.534,14.534,14.534c8.026,0,14.534-6.508,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466z M14.757,8h2.42v2.574h-2.42V8z M18.762,23.622H16.1c-1.034,0-1.475-0.44-1.475-1.496v-6.865c0-0.33-0.176-0.484-0.484-0.484h-0.88V12.4h2.662c1.035,0,1.474,0.462,1.474,1.496v6.888c0,0.309,0.177,0.483,0.484,0.483h0.88L18.762,23.622L18.762,23.622z" />
                     </svg>
                 </div>
-                County view way render extremely slowly on less-capable hardware.
+
+                <div id="warningBoxContent"></div>
             </div>
             <span id="tabCap">
                 <i id="tabCap-inner"></i>

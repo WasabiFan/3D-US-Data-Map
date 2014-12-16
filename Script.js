@@ -1,4 +1,4 @@
-﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.min.js" />
+﻿/// <reference path="http://code.jquery.com/jquery-1.9.1.js" />
 /// <reference path="http://code.jquery.com/ui/1.10.3/jquery-ui.js" />
 /// <reference path="Global.js" />
 /// <reference path="DataPlugins.js" />
@@ -17,13 +17,13 @@ var switchGeoType = function (type) { //Function to reload the map and associate
         scene.remove(mapObject); //Remove the map from the scene
 
     mapObject = new THREE.Object3D();//Re-initialize the map object
+
+    if (type == geoType.county)
+        showWarningBox('County view way render extremely slowly on less-capable hardware.');
+    else if(currentGeoType == geoType.county && type == geoType.state)
+        hideWarningBox(true);
+
     currentGeoType = type; //Set the loaded map type
-
-    if (currentGeoType == geoType.county)
-        $('#slowWarningBox').css('display', 'block');
-    else
-        $('#slowWarningBox').css('display', 'none');
-
     $('#geoType').val(type); //Set the selectbox in case it is different
     initDataPlugins().then(function () {//Load the required census data
         loadMap(); //Load the map
@@ -392,6 +392,15 @@ var helpResize = function () {
 };
 
 $(document).ready(function () { //Document is ready
+    if (document.cookie.indexOf("prevVisit") == -1) {
+        showWarningBox("Welcome! Check out the help button to the right to get started.", 'info');
+        setTimeout(function () {
+            console.log("hiding");
+            hideWarningBox(true);
+        }, 10000);
+        document.cookie = "prevVisit=true";
+    }
+
     //Get the desired geography type from URL or fallback to the selectbox
     var geoType = getQuerystring('geoType') || $('#geoType').val();
 

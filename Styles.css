@@ -267,6 +267,7 @@ button:active{
     display:none;
 
     height:32px;
+    max-height: 32px;
     line-height:32px;
 }
 
@@ -275,6 +276,19 @@ button:active{
     float: left;
     height:22px;
     width:22px;
+}
+
+.svgInfoIcon {
+    margin: 5px;
+    float: left;
+    height:22px;
+    width:22px;
+}
+
+#warningBoxContent {
+    float: left;
+    text-wrap:none;
+    height: 32px;
 }
 
 #tabCap {

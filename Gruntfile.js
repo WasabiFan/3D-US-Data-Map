@@ -1,7 +1,7 @@
 
 module.exports = function (grunt) {
 
-    var filePattern = /\/(Build|node_modules)\//
+    var filePattern = /(Build|node_modules)/
     var files = grunt.file.expand(['**']).filter(function (f) {
         return !filePattern.test(f);
     })

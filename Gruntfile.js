@@ -13,6 +13,10 @@ module.exports = function (grunt) {
             main: {
                 src: files,
                 dest: 'Build/',
+                rename: function (dest, src) {
+                    console.log(src);
+                    return dest;
+                }
             }
         },
 

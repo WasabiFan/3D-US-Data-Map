@@ -1,13 +1,22 @@
 
 module.exports = function (grunt) {
 
+    var filePattern = /(Build|node_modules)/
+    var files = grunt.file.expand(['**']).filter(function (f) {
+        return !filePattern.test(f);
+    })
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         copy: {
             main: {
-                src: '**',
+                src: files,
                 dest: 'Build/',
+                rename: function (dest, src) {
+                    console.log(src);
+                    return dest;
+                }
             }
         },
 
@@ -22,7 +31,6 @@ module.exports = function (grunt) {
                 options: {
                     base: 'Build',
 					repo: 'https://github.com/datamap/datamap.github.io.git',
-					add:true,
 					branch: 'master'
                 },
                 src: '**'

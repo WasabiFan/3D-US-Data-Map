@@ -20,11 +20,10 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <!-- Three.js-->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js"></script>
     <!-- Three.js WebGL Detector (no CDN available)-->
     <script>var Detector = { canvas: !!window.CanvasRenderingContext2D, webgl: function () { try { var e = document.createElement("canvas"); return !!window.WebGLRenderingContext && (e.getContext("webgl") || e.getContext("experimental-webgl")) } catch (t) { return false } }(), workers: !!window.Worker, fileapi: window.File && window.FileReader && window.FileList && window.Blob, getWebGLErrorMessage: function () { var e = document.createElement("div"); e.id = "webgl-error-message"; e.style.fontFamily = "monospace"; e.style.fontSize = "13px"; e.style.fontWeight = "normal"; e.style.textAlign = "center"; e.style.background = "#fff"; e.style.color = "#000"; e.style.padding = "1.5em"; e.style.width = "400px"; e.style.margin = "5em auto 0"; if (!this.webgl) { e.innerHTML = window.WebGLRenderingContext ? ['Your graphics card does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" style="color:#000">WebGL</a>.<br />', 'Find out how to get it <a href="http://get.webgl.org/" style="color:#000">here</a>.'].join("\n") : ['Your browser does not seem to support <a href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation" style="color:#000">WebGL</a>.<br/>', 'Find out how to get it <a href="http://get.webgl.org/" style="color:#000">here</a>.'].join("\n") } return e }, addGetWebGLMessage: function (e) { var t, n, r; e = e || {}; t = e.parent !== undefined ? e.parent : document.body; n = e.id !== undefined ? e.id : "oldie"; r = Detector.getWebGLErrorMessage(); r.id = n; t.appendChild(r) } }</script>
 
-    <!----FILE LINKS-->
     <!-- Raphael JS-->
     <script type="text/javascript" src="raphael.js"></script>
     <!-- Three.js OrbitControls (Modified hotfix version to work with non-minified three)-->
@@ -49,7 +48,6 @@
     <script type="text/javascript" src="Selection.js"></script>
     <!-- Script.js: Main script file-->
     <script type="text/javascript" src="Script.js"></script>
-    <!----END FILE LINKS-->
 </head>
 <body>
     <!-- Main div to render the scene in to-->
@@ -542,6 +540,9 @@
                         <th>Description</th>
                     </tr>
                     <tr>
+                        <th colspan="2" class="tableHeader-emphasized">Demographics</th>
+                    </tr>
+                    <tr>
                         <td><div class="code equationLink">totalPopulation</div></td>
                         <td>Most basic equation. Just the total population.</td>
                     </tr>
@@ -572,6 +573,21 @@
                     <tr>
                         <td><div class="code equationLink">onePersonHouseholds / totalPopulation</div></td>
                         <td>A relative value indicating the ratio of people living in a house alone.</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="tableHeader-emphasized">Crime (only available for states)</th>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">violentCrimeTotal</div></td>
+                        <td>The number of violent crime cases in one year.</td>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">(murder / violentCrimeTotal) * 100</div></td>
+                        <td>The percentage of violent crime cases that included murder.</td>
+                    </tr>
+                    <tr>
+                        <td><div class="code equationLink">(robbery / violentCrimeTotal) * 100</div></td>
+                        <td>The percentage of violent crime cases that included robbery.</td>
                     </tr>
                 </table>
             </div>

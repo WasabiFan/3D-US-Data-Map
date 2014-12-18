@@ -12,7 +12,7 @@ $(document).mousemove(function (e) {
     var vector = new THREE.Vector3((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
 
     //Translate the point(I think)
-    projector.unprojectVector(vector, camera);
+    vector.unproject(camera);
 
     //Create a raycaster (using more magic) to help find things in the way of the mouse
     var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());

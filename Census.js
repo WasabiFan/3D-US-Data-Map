@@ -64,7 +64,7 @@ var censusURL = function (year, dataSet, getFor, censusName) {
         // censusName needs to be modified a little
         censusName = ',' + censusName;
     }
-    return "http://api.census.gov/data/" + year + "/" + dataSet + "?key=" + APIKey + "&get=NAME" + censusName + "&for=" + getFor + ":*";
+    return "https://api.census.gov/data/" + year + "/" + dataSet + "?key=" + APIKey + "&get=NAME" + censusName + "&for=" + getFor + ":*";
 }
 
 var censusGeoInit = function () {// Loads the basic census data
